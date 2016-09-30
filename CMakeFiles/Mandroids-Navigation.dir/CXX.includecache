@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/sean/Programs/git-repos/Mandroids-Navigation/main.cpp
+opencv2/highgui/highgui.hpp
+/home/sean/Programs/git-repos/Mandroids-Navigation/opencv2/highgui/highgui.hpp
+opencv2/imgproc/imgproc.hpp
+/home/sean/Programs/git-repos/Mandroids-Navigation/opencv2/imgproc/imgproc.hpp
+iostream
+-
+math.h
+-
+eigen3/Eigen/Dense
+-
+
