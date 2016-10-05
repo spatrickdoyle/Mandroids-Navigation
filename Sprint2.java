@@ -8,15 +8,16 @@ public class Sprint2 {
         parkerAvenger.connect();
         parkerAvenger.refreshAnalogPins(); // Cache the Analog pin information
 
-	//turn(parkerAvenger);
+	    //turn(parkerAvenger);
         //raiseBoom(parkerAvenger);
-        move3Meters(parkerAvenger);
+        //move3Meters(parkerAvenger);
         //moveServoAngle(parkerAvenger, 90);
         //Sonar(parkerAvenger);
         //Sonar(parkerAvenger);
         //BumpSensor(parkerAvenger);
         //TempTester(parkerAvenger);
         //getThermistorReading(parkerAvenger);
+        WindTester(parkerAvenger);
 
         parkerAvenger.close();
 
@@ -79,13 +80,20 @@ public class Sprint2 {
     }
     public static void TempTester(RXTXRobot r)
     {
-        AnalogPin temp = r.getAnalogPin(10);
-        System.out.println("Sensor " + 10 + " has value: " + temp.getValue());
+        AnalogPin temp = r.getAnalogPin(0);
+        double roomTemp = (temp.getValue() - 796.6969697)/-9.212121212;
+
+        System.out.println("Sensor " + 0 + " has value: " + temp.getValue());
+        System.out.println("The temperature is " + roomTemp + " degrees Celsius.");
     }
-    //This function reads the voltage coming into analog pin 0 ten times //takes the average, then returns the result.
-    /*public static int getThermistorReading(RXTXRobot r) {
-        int sum = 0;         int readingCount = 10;                 //Read the analog pin values ten times, adding to sum each time         for (int i = 0; i < readingCount; i++) {
-        //Refresh the analog pins so we get new readings
-        r.refreshAnalogPins();             int reading = r.getAnalogPin(0).getValue();             sum += reading;         }                 //Return the average reading         return sum / readingCount;
-        }*/
+    public static void WindTester(RXTXRobot r)
+    {
+        AnalogPin wind = r.getAnalogPin(2);
+        AnalogPin temp = r.getAnalogPin(0);
+        System.out.println("Sensor " + 2 + " has value: " + wind.getValue());
+        double roomTemp = (temp.getValue() - 796.6969697)/-9.212121212;
+        double windTemp = (wind.getValue() - 796.6969697)/-9.212121212;
+        double difference = (windTemp - roomTemp);
+        System.out.println("Temperature difference is " + difference);
+    }
 }
