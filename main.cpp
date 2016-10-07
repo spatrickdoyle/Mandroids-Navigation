@@ -25,8 +25,8 @@ int main(int argc, char *argv[]){
 	int gh = 255;
 	int bh = 170;
 
-	float dpp_h = 0.06013;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 76.96 degrees
-	float dpp_v = 0.06939;//DEGREES PER PIXEL VERTICALLY//Total angle of view: 49.96 degrees
+	float dpp_h = 0.0766;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 61.284 degrees
+	float dpp_v = 0.09185;//DEGREES PER PIXEL VERTICALLY//Total angle of view: 41.148 degrees
 	float height = 290.5;//CEILING HEIGHT IN INCHES (314.5 from ground)
 	//Relative size of blobs to detect
 	int threshold_area_min = 50;
