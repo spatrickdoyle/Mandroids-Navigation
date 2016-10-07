@@ -3,21 +3,20 @@ import rxtxrobot.*;
 public class Sprint2 {
     public static void main(String args[])
     {
-        RXTXRobot parkerAvenger = new ArduinoNano(); // Create RXTXRobot object
+        RXTXRobot parkerAvenger = new ArduinoUno(); // Create RXTXRobot object
         parkerAvenger.setPort("/dev/ttyS80"); // Set port to COM2
         parkerAvenger.connect();
         parkerAvenger.refreshAnalogPins(); // Cache the Analog pin information
 
-	    //turn(parkerAvenger);
+	//turn(parkerAvenger);
         //raiseBoom(parkerAvenger);
         //move3Meters(parkerAvenger);
-        //moveServoAngle(parkerAvenger, 90);
-        //Sonar(parkerAvenger);
+        //moveServoAngle(parkerAvenger);
+        Sonar(parkerAvenger);
         //Sonar(parkerAvenger);
         //BumpSensor(parkerAvenger);
         //TempTester(parkerAvenger);
-        //getThermistorReading(parkerAvenger);
-        WindTester(parkerAvenger);
+        //WindTester(parkerAvenger);
 
         parkerAvenger.close();
 
@@ -44,36 +43,38 @@ public class Sprint2 {
         //Attach motors on pins 5 and 6 and move them forward for an amount of time we will tune for 3 meters
         r.attachMotor(RXTXRobot.MOTOR1, 5);
         r.attachMotor(RXTXRobot.MOTOR2, 6);
-        r.runMotor(RXTXRobot.MOTOR1, 255, RXTXRobot.MOTOR2, 255, 4600);
+        r.runMotor(RXTXRobot.MOTOR1, 255, RXTXRobot.MOTOR2, 255, 5400);
     }
-    public static void moveServoAngle(RXTXRobot r, int theta)
+    public static void moveServoAngle(RXTXRobot r)
     {
         //Connect the servos to the Arduino to pin 9
         r.attachServo(RXTXRobot.SERVO1, 7);
-	//r.sleep(10000);
         //Move the servo to the specified angle
         r.moveServo(RXTXRobot.SERVO1, 0);
 	r.sleep(1000);
-	r.moveServo(RXTXRobot.SERVO1, 30);
-	r.sleep(1000);
 	r.moveServo(RXTXRobot.SERVO1, 180);
 	r.sleep(1000);
-	//r.sleep(20000);
-	//r.moveServo(RXTXRobot.SERVO1, 0);
+	r.moveServo(RXTXRobot.SERVO1, 75);
+	r.sleep(1000);
     }
     public static void Sonar(RXTXRobot r)
     {
         //Take a distance reading - not working at all
-        System.out.println("Response: " + r.getPing(9) + " cm");
+	for (int x=0; x < 100; ++x)
+	{
+	//Read the ping sensor value, which is connected to pin 12
+	   System.out.println("Response: " + r.getPing(12) + " cm");
+	   r.sleep(300);
+	}
     }
     public static void BumpSensor(RXTXRobot r)
     {
-        AnalogPin bump = r.getAnalogPin(0);
+        AnalogPin bump = r.getAnalogPin(1);
         r.attachMotor(RXTXRobot.MOTOR1, 5);
         r.attachMotor(RXTXRobot.MOTOR2, 6);
         while (bump.getValue() > 1000) {
 	    r.refreshAnalogPins();
-            bump = r.getAnalogPin(0);
+            bump = r.getAnalogPin(1);
             r.runMotor(RXTXRobot.MOTOR1, 100, RXTXRobot.MOTOR2, 100, 0);
         }
         r.runMotor(RXTXRobot.MOTOR1, 100, RXTXRobot.MOTOR2, 0, 0);

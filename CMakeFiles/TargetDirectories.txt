@@ -1,3 +1,1 @@
-/home/sean/Programs/git-repos/Mandroids-Navigation/CMakeFiles/rebuild_cache.dir
-/home/sean/Programs/git-repos/Mandroids-Navigation/CMakeFiles/edit_cache.dir
-/home/sean/Programs/git-repos/Mandroids-Navigation/CMakeFiles/Mandroids-Navigation.dir
+/home/pi/Mandroids-Navigation/CMakeFiles/Mandroids-Navigation.dir

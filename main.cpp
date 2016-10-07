@@ -3,6 +3,7 @@
 #include <iostream>
 #include <math.h>
 #include <eigen3/Eigen/Dense>
+#include <sys/time.h>
 
 using namespace cv;
 using namespace std;
@@ -14,8 +15,8 @@ vector<Rect> findBiggestBlob(Mat&,int,int);
 int main(int argc, char *argv[]){
 	VideoCapture camera(0);
 
-	namedWindow("screen_cap",WINDOW_AUTOSIZE);
-	namedWindow("path",WINDOW_AUTOSIZE);
+	//namedWindow("screen_cap",WINDOW_AUTOSIZE);
+	//namedWindow("path",WINDOW_AUTOSIZE);
 
 	int rl = 136;
 	int gl = 5;
@@ -61,7 +62,24 @@ int main(int argc, char *argv[]){
 	float dist = delta+1;
 	camera.read(drawing);
 	drawing.setTo(Scalar(0,0,0));
+
+	struct timeval start, end;
+
+	long mtime, seconds, useconds;  
+
+	gettimeofday(&start, NULL);
 	while(true) {
+		gettimeofday(&end, NULL);
+
+		seconds  = end.tv_sec  - start.tv_sec;
+		useconds = end.tv_usec - start.tv_usec;
+
+		mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+
+		cout << mtime << '\n';
+
+		gettimeofday(&start, NULL);
+
 		camera.read(screen_cap);
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
 
@@ -117,9 +135,9 @@ int main(int argc, char *argv[]){
 			cout << "dy =	" << theta[3] << "\n\n\n";
 		}
 
-		imshow("screen_cap",screen_cap);
+		//imshow("screen_cap",screen_cap);
 		//imshow("path",drawing);
-		imshow("path",thresholded);
+		//imshow("path",thresholded);
 		waitKey(10);
 	}
 	return 0;
