@@ -1,23 +1,21 @@
-import rxtxrobot.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+//import rxtxrobot.*;
+import java.io.*;
 import java.net.Socket;
 import java.net.ServerSocket;
 
 public class Sprint2 {
 
 	public static void main(String args[]) {
-		RXTXRobot parkerAvenger = new ArduinoUno();
+		/*RXTXRobot parkerAvenger = new ArduinoUno();
 		parkerAvenger.setPort("/dev/ttyS80");
 		parkerAvenger.connect();
-		parkerAvenger.refreshAnalogPins();
+		parkerAvenger.refreshAnalogPins();*/
 
 		int left;
 		int right;
 
-		parkerAvenger.attachMotor(RXTXRobot.MOTOR1,5);
-		parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
+		//parkerAvenger.attachMotor(RXTXRobot.MOTOR1,5);
+		//parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
 
 		try {
 			ServerSocket svr = new ServerSocket(8000);
@@ -25,27 +23,26 @@ public class Sprint2 {
 			while (true) {
 				Socket connection = svr.accept();
 				System.out.println("Connection recieved! Sending message...");
-				PrintStream out = new PrintStream(connection.getOutputStream());
-				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				InputStream in = connection.getInputStream();
 
-				out.println("connection");
-
-				String line = in.readLine();
-				System.out.println(line);
-				while(line != null && line.length() > 0) {
+				int byteRead;
+				while ((byteRead = in.read()) != -1) {
+					System.out.print((char)byteRead);
+				}
+				/*while(line != null && line.length() > 0) {
 					out.println("syn");
 					line = in.readLine();
 					//System.out.println(line);
 					left = Integer.parseInt(line);
-					//System.out.println(left);
+					System.out.println(left);
 
 					out.println("ack");
 					line = in.readLine();
 					//System.out.println(line);
 					right = Integer.parseInt(line);
-					//System.out.println(right);
-					parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,0);
-				}
+					System.out.println(right);
+					//parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,0);
+				}*/
 
 				connection.close();
 			}

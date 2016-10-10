@@ -42,6 +42,9 @@ while True:
 
 	#print int(255*controller.get_axis(2)),int(255*controller.get_axis(5))
 
+	print str(int(left.dot(theta)*255))
+	print str(int(right.dot(theta)*255))+'\n'
+
 	s.send(str(int(left.dot(theta)*255))+'\n')
 	s.send(str(int(right.dot(theta)*255))+'\n')
 
