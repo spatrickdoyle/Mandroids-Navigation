@@ -11,25 +11,33 @@ public class remote_control {
 
 		String line;
 		char next;
-		int left,right;
+		int left,right,time;
 
 		try {
 			while (true) {
 				line = "";
-				while ((next = (char)System.in.read()) != '\n') {
+				while ((next = (char)System.in.read()) != ' ') {
 					line += next;
 				}
 				left = Integer.parseInt(line);
 
 				line = "";
-				while ((next = (char)System.in.read()) != '\n') {
+				while ((next = (char)System.in.read()) != ' ') {
 					line += next;
 				}
 				right = Integer.parseInt(line);
 
+				line = "";
+				while ((next = (char)System.in.read()) != '\n') {
+					line += next;
+				}
+				time = Integer.parseInt(line);
+
 				System.out.print(left);
 				System.out.print(' ');
-				System.out.println(right);
+				System.out.print(right);
+				System.out.print(' ');
+				System.out.println(time);
 			}
 		}
 		catch(IOException ex) {

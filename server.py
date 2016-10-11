@@ -11,13 +11,8 @@ while True:
 
 	while True:
 		clientSocket.send('sync')
-		left = clientSocket.recv(100)
-		if not left: break
+		req = clientSocket.recv(100)
+		if not req: break
 
-		clientSocket.send('sync2')
-		right = clientSocket.recv(100)
-		if not right: break
-
-		print left
-		print right
+		print req
 	clientSocket.close()

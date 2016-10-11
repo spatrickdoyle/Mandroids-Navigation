@@ -45,8 +45,6 @@ while True:
 	print str(int(left.dot(theta)*255)),str(int(right.dot(theta)*255))+'\n'
 
 	s.recv(1024)
-	s.send(str(int(left.dot(theta)*255)))
-	s.recv(1024)
-	s.send(str(int(right.dot(theta)*255)))
+	s.send(str(int(left.dot(theta)*255)) + ' ' + str(int(right.dot(theta)*255)) + " 0")
 
 	pygame.display.update()
