@@ -5,7 +5,7 @@ import numpy as np
 pygame.init()
 
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-s.connect((sys.argv[1],8000))
+s.connect((sys.argv[1],2007))
 
 screen = pygame.display.set_mode((200,200))
 
@@ -42,10 +42,11 @@ while True:
 
 	#print int(255*controller.get_axis(2)),int(255*controller.get_axis(5))
 
-	print str(int(left.dot(theta)*255))
-	print str(int(right.dot(theta)*255))+'\n'
+	print str(int(left.dot(theta)*255)),str(int(right.dot(theta)*255))+'\n'
 
-	s.send(str(int(left.dot(theta)*255))+'\n')
-	s.send(str(int(right.dot(theta)*255))+'\n')
+	s.recv(1024)
+	s.send(str(int(left.dot(theta)*255)))
+	s.recv(1024)
+	s.send(str(int(right.dot(theta)*255)))
 
 	pygame.display.update()

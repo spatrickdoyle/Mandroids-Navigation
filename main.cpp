@@ -3,7 +3,6 @@
 #include <iostream>
 #include <math.h>
 #include <eigen3/Eigen/Dense>
-#include <sys/time.h>
 
 using namespace cv;
 using namespace std;
@@ -63,23 +62,7 @@ int main(int argc, char *argv[]){
 	camera.read(drawing);
 	drawing.setTo(Scalar(0,0,0));
 
-	struct timeval start, end;
-
-	long mtime, seconds, useconds;  
-
-	gettimeofday(&start, NULL);
 	while(true) {
-		gettimeofday(&end, NULL);
-
-		seconds  = end.tv_sec  - start.tv_sec;
-		useconds = end.tv_usec - start.tv_usec;
-
-		mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
-
-		cout << mtime << '\n';
-
-		gettimeofday(&start, NULL);
-
 		camera.read(screen_cap);
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
 
@@ -127,17 +110,17 @@ int main(int argc, char *argv[]){
 
 		if (points_abs.size() > 0) {
 			theta = ((X.transpose()*X).inverse())*(X.transpose())*Y;
-			cout << X << '\n';
-			cout << Y << '\n';
+			//cout << X << '\n';
+			//cout << Y << '\n';
 			cout << theta << "\n\n";
 			cout << "theta = 	" << asin(theta[0]) << ' ' << acos(theta[1]) << '\n';
 			cout << "dx =	" << theta[2] << '\n';
 			cout << "dy =	" << theta[3] << "\n\n\n";
 		}
 
-		//imshow("screen_cap",screen_cap);
+		imshow("screen_cap",screen_cap);
 		//imshow("path",drawing);
-		//imshow("path",thresholded);
+		imshow("path",thresholded);
 		waitKey(10);
 	}
 	return 0;

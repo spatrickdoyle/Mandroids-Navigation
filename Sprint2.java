@@ -1,55 +1,14 @@
-//import rxtxrobot.*;
+import rxtxrobot.*;
 import java.io.*;
-import java.net.Socket;
-import java.net.ServerSocket;
 
 public class Sprint2 {
 
 	public static void main(String args[]) {
-		/*RXTXRobot parkerAvenger = new ArduinoUno();
+		RXTXRobot parkerAvenger = new ArduinoUno();
 		parkerAvenger.setPort("/dev/ttyS80");
 		parkerAvenger.connect();
-		parkerAvenger.refreshAnalogPins();*/
+		parkerAvenger.refreshAnalogPins();
 
-		int left;
-		int right;
-
-		//parkerAvenger.attachMotor(RXTXRobot.MOTOR1,5);
-		//parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
-
-		try {
-			ServerSocket svr = new ServerSocket(8000);
-
-			while (true) {
-				Socket connection = svr.accept();
-				System.out.println("Connection recieved! Sending message...");
-				InputStream in = connection.getInputStream();
-
-				int byteRead;
-				while ((byteRead = in.read()) != -1) {
-					System.out.print((char)byteRead);
-				}
-				/*while(line != null && line.length() > 0) {
-					out.println("syn");
-					line = in.readLine();
-					//System.out.println(line);
-					left = Integer.parseInt(line);
-					System.out.println(left);
-
-					out.println("ack");
-					line = in.readLine();
-					//System.out.println(line);
-					right = Integer.parseInt(line);
-					System.out.println(right);
-					//parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,0);
-				}*/
-
-				connection.close();
-			}
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
 		//turn(parkerAvenger);
 		//raiseBoom(parkerAvenger);
 		//move3Meters(parkerAvenger);
@@ -59,11 +18,11 @@ public class Sprint2 {
 		//TempTester(parkerAvenger);
 		//WindTester(parkerAvenger);
 
-		//parkerAvenger.close();
+		parkerAvenger.close();
 	}
 
 
-	/*public static void turn(RXTXRobot r) {
+	public static void turn(RXTXRobot r) {
 		r.attachMotor(RXTXRobot.MOTOR1,5);
 		r.attachMotor(RXTXRobot.MOTOR2,6);
 		r.runMotor(RXTXRobot.MOTOR1,255,RXTXRobot.MOTOR2,-255,4600);
@@ -134,5 +93,5 @@ public class Sprint2 {
 		double windTemp = (wind.getValue() - 796.6969697)/-9.212121212;
 		double difference = (windTemp - roomTemp);
 		System.out.println("Temperature difference is " + difference);
-	}*/
+	}
 }
