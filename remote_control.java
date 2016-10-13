@@ -1,53 +1,37 @@
-//import rxtxrobot.*;
+import rxtxrobot.*;
 import java.io.*;
 
 public class remote_control {
 
 	public static void main(String args[]) {
-		/*RXTXRobot parkerAvenger = new ArduinoUno();
+		RXTXRobot parkerAvenger = new ArduinoUno();
 		parkerAvenger.setPort("/dev/ttyS80");
 		parkerAvenger.connect();
-		parkerAvenger.refreshAnalogPins();*/
+		parkerAvenger.refreshAnalogPins();
 
 		String line;
-		char next;
+		String[] leftrighttime;
 		int left,right,time;
 
-		try {
-			while (true) {
-				line = "";
-				while ((next = (char)System.in.read()) != ' ') {
-					line += next;
-				}
-				left = Integer.parseInt(line);
+		parkerAvenger.attachMotor(RXTXRobot.MOTOR1,5);
+                parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
 
-				line = "";
-				while ((next = (char)System.in.read()) != ' ') {
-					line += next;
-				}
-				right = Integer.parseInt(line);
+		while (true) {
+			line = System.console().readLine();
+			leftrighttime = line.split(" ");
 
-				line = "";
-				while ((next = (char)System.in.read()) != '\n') {
-					line += next;
-				}
-				time = Integer.parseInt(line);
+			left = Integer.parseInt(leftrighttime[0]);
+			right = Integer.parseInt(leftrighttime[1]);
+			time = Integer.parseInt(leftrighttime[2]);
 
-				System.out.print(left);
-				System.out.print(' ');
-				System.out.print(right);
-				System.out.print(' ');
-				System.out.println(time);
-			}
+			System.out.print(left);
+			System.out.print(' ');
+			System.out.print(right);
+			System.out.print(' ');
+			System.out.println(time);
+
+			parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,time*1000);
 		}
-		catch(IOException ex) {
-			System.exit(-1);
-		}
-
-		/*parkerAvenger.attachMotor(RXTXRobot.MOTOR1,5);
-		parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
-		parkerAvenger.runMotor(RXTXRobot.MOTOR1,255,RXTXRobot.MOTOR2,255,0);*/
-
 
 		//parkerAvenger.close();
 	}

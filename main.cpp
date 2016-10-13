@@ -26,10 +26,10 @@ int main(int argc, char *argv[]){
 
 	float dpp_h = 0.0766;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 61.284 degrees
 	float dpp_v = 0.09185;//DEGREES PER PIXEL VERTICALLY//Total angle of view: 41.148 degrees
-	float height = 290.5;//CEILING HEIGHT IN INCHES (314.5 from ground)
+	float height = 300.5;//CEILING HEIGHT IN INCHES (314.5 from ground)
 	//Relative size of blobs to detect
-	int threshold_area_min = 50;
-	int threshold_area_max = 120;
+	int threshold_area_min = 70;
+	int threshold_area_max = 130;
 	//Relative maximum movement of the blobs each tick
 	int delta = 20;
 
@@ -62,6 +62,10 @@ int main(int argc, char *argv[]){
 	camera.read(drawing);
 	drawing.setTo(Scalar(0,0,0));
 
+	float TOTAL_THETA = 0;
+	float TOTAL_X = 0;
+	float TOTAL_Y = 0;
+
 	while(true) {
 		camera.read(screen_cap);
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
@@ -79,6 +83,16 @@ int main(int argc, char *argv[]){
 			}
 		}
 
+		/*for (int i = 0; i < points.size(); i++)
+			cout << points[i].x << ' ' << points[i].y << "  ";
+		cout << '\n';
+		for (int i = 0; i < points_abs.size(); i++)
+			cout << points_abs[i][0] << ' ' << points_abs[i][1] << "  ";
+		cout << '\n';
+		for (int i = 0; i < prev.size(); i++)
+			cout << prev[i][0] << ' ' << prev[i][1] << "  ";
+		cout << "\n\n";*/
+
 		if (points_abs.size() > 0) {
 			X = Eigen::MatrixXf(points_abs.size()*2,4);
 			Y = Eigen::VectorXf(points_abs.size()*2);
@@ -90,7 +104,11 @@ int main(int argc, char *argv[]){
 				//uncomment to calibrate delta
 				//cout << i << ' ' << j << ' ' << dist << '\n';
 				if (dist < delta) {
-					line(drawing,Point(points_abs[i][0]*5 + 320,points_abs[i][1]*5 + 240),Point(prev[j][0]*5 + 320,prev[j][1]*5 + 240),Scalar(255,255,255));
+					//cout << i << ' ' << j << ' ' << dist << '\n';
+					//line(drawing,Point(points_abs[i][0]*5 + 320,points_abs[i][1]*5 + 240),Point(prev[j][0]*5 + 320,prev[j][1]*5 + 240),Scalar(255,255,255));
+
+					//cout << points_abs[i][0] << ' ' << points_abs[i][1] << '\n';
+					//cout << prev[j][0] << ' ' << prev[j][1] << "\n\n";
 
 					X(i*2,0) = prev[j][0];
 					X(i*2,1) = -prev[j][1];
@@ -110,17 +128,23 @@ int main(int argc, char *argv[]){
 
 		if (points_abs.size() > 0) {
 			theta = ((X.transpose()*X).inverse())*(X.transpose())*Y;
-			//cout << X << '\n';
+			//cout << X << "\n\n";
 			//cout << Y << '\n';
 			cout << theta << "\n\n";
-			cout << "theta = 	" << asin(theta[0]) << ' ' << acos(theta[1]) << '\n';
-			cout << "dx =	" << theta[2] << '\n';
-			cout << "dy =	" << theta[3] << "\n\n\n";
+			//cout << "theta = 	" << acos(theta[0]) << ' ' << asin(theta[1]) << '\n';
+			//cout << "dx =	" << theta[2] << '\n';
+			//cout << "dy =	" << theta[3] << "\n\n\n";
+			TOTAL_THETA += (acos(theta[0])+asin(theta[1]))/2.0;
+			TOTAL_X += theta[2];
+			TOTAL_Y += theta[3];
+
+			cout << (acos(theta[0])+asin(theta[1]))/2.0 << ' ' << theta[2] << ' ' << theta[3] << '\n';
+			cout << TOTAL_THETA << ' ' << TOTAL_X << ' ' << TOTAL_Y << '\n';
 		}
 
-		imshow("screen_cap",screen_cap);
+		//imshow("screen_cap",screen_cap);
 		//imshow("path",drawing);
-		imshow("path",thresholded);
+		//imshow("path",thresholded);
 		waitKey(10);
 	}
 	return 0;

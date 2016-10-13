@@ -11,7 +11,7 @@ public class Sprint2 {
 
 		//turn(parkerAvenger);
 		//raiseBoom(parkerAvenger);
-		//move3Meters(parkerAvenger);
+		move3Meters(parkerAvenger);
 		//moveServoAngle(parkerAvenger);
 		//Sonar(parkerAvenger);
 		//BumpSensor(parkerAvenger);
@@ -25,7 +25,7 @@ public class Sprint2 {
 	public static void turn(RXTXRobot r) {
 		r.attachMotor(RXTXRobot.MOTOR1,5);
 		r.attachMotor(RXTXRobot.MOTOR2,6);
-		r.runMotor(RXTXRobot.MOTOR1,255,RXTXRobot.MOTOR2,-255,4600);
+		r.runMotor(RXTXRobot.MOTOR1,250,RXTXRobot.MOTOR2,-500,4600);
 	}
 
 	public static void raiseBoom(RXTXRobot r) {
@@ -42,7 +42,7 @@ public class Sprint2 {
 		//Attach motors on pins 5 and 6 and move them forward for an amount of time we will tune for 3 meters
 		r.attachMotor(RXTXRobot.MOTOR1,5);
 		r.attachMotor(RXTXRobot.MOTOR2,6);
-		r.runMotor(RXTXRobot.MOTOR1,255,RXTXRobot.MOTOR2,255,5400);
+		r.runMotor(RXTXRobot.MOTOR1,-500,RXTXRobot.MOTOR2,-500,5400);
 	}
 
 	public static void moveServoAngle(RXTXRobot r) {
