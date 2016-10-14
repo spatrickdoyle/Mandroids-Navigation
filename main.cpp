@@ -12,10 +12,10 @@ vector<Rect> findBiggestBlob(Mat&,int,int);
 
 
 int main(int argc, char *argv[]){
-	VideoCapture camera(1);
+	VideoCapture camera(0);
 
-	namedWindow("screen_cap",WINDOW_AUTOSIZE);
-	namedWindow("path",WINDOW_AUTOSIZE);
+	//namedWindow("screen_cap",WINDOW_AUTOSIZE);
+	//namedWindow("path",WINDOW_AUTOSIZE);
 
 	int rl = 181;
 	int gl = 176;
@@ -65,6 +65,9 @@ int main(int argc, char *argv[]){
 	float TOTAL_THETA = 0;
 	float TOTAL_X = 0;
 	float TOTAL_Y = 0;
+
+	char a[100];
+	cin >> a;
 
 	while(true) {
 		camera.read(screen_cap);
@@ -148,9 +151,9 @@ int main(int argc, char *argv[]){
 			cout << TOTAL_THETA << ' ' << TOTAL_X << ' ' << TOTAL_Y << "\n";
 		}
 
-		imshow("screen_cap",screen_cap);
+		//imshow("screen_cap",screen_cap);
 		//imshow("path",drawing);
-		imshow("path",thresholded);
+		//imshow("path",thresholded);
 		waitKey(10);
 	}
 	return 0;
