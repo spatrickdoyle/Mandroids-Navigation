@@ -12,24 +12,24 @@ vector<Rect> findBiggestBlob(Mat&,int,int);
 
 
 int main(int argc, char *argv[]){
-	VideoCapture camera(0);
+	VideoCapture camera(1);
 
-	//namedWindow("screen_cap",WINDOW_AUTOSIZE);
-	//namedWindow("path",WINDOW_AUTOSIZE);
+	namedWindow("screen_cap",WINDOW_AUTOSIZE);
+	namedWindow("path",WINDOW_AUTOSIZE);
 
-	int rl = 136;
-	int gl = 5;
-	int bl = 0;
+	int rl = 181;
+	int gl = 176;
+	int bl = 81;
 	int rh = 255;
 	int gh = 255;
-	int bh = 170;
+	int bh = 255;
 
 	float dpp_h = 0.0766;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 61.284 degrees
 	float dpp_v = 0.09185;//DEGREES PER PIXEL VERTICALLY//Total angle of view: 41.148 degrees
 	float height = 300.5;//CEILING HEIGHT IN INCHES (314.5 from ground)
 	//Relative size of blobs to detect
-	int threshold_area_min = 70;
-	int threshold_area_max = 130;
+	int threshold_area_min = 90;
+	int threshold_area_max = 255;
 	//Relative maximum movement of the blobs each tick
 	int delta = 20;
 
@@ -130,21 +130,27 @@ int main(int argc, char *argv[]){
 			theta = ((X.transpose()*X).inverse())*(X.transpose())*Y;
 			//cout << X << "\n\n";
 			//cout << Y << '\n';
-			cout << theta << "\n\n";
+			//cout << theta << "\n\n";
 			//cout << "theta = 	" << acos(theta[0]) << ' ' << asin(theta[1]) << '\n';
 			//cout << "dx =	" << theta[2] << '\n';
 			//cout << "dy =	" << theta[3] << "\n\n\n";
-			TOTAL_THETA += (acos(theta[0])+asin(theta[1]))/2.0;
-			TOTAL_X += theta[2];
-			TOTAL_Y += theta[3];
+			if ((!isnan(theta[0]))&&(!isnan(theta[1])))
+				if (pow((acos(theta[0])+asin(theta[1]))/2.0,2) < 50)
+					TOTAL_THETA += (acos(theta[0])+asin(theta[1]))/2.0;
+			if (!isnan(theta[2]))
+				if (pow(theta[2],2) < 900)
+					TOTAL_X += theta[2];
+			if (!isnan(theta[3]))
+				if (pow(theta[3],2) < 900)
+					TOTAL_Y += theta[3];
 
-			cout << (acos(theta[0])+asin(theta[1]))/2.0 << ' ' << theta[2] << ' ' << theta[3] << '\n';
-			cout << TOTAL_THETA << ' ' << TOTAL_X << ' ' << TOTAL_Y << '\n';
+			//cout << (acos(theta[0])+asin(theta[1]))/2.0 << ' ' << theta[2] << ' ' << theta[3] << '\n';
+			cout << TOTAL_THETA << ' ' << TOTAL_X << ' ' << TOTAL_Y << "\n";
 		}
 
-		//imshow("screen_cap",screen_cap);
+		imshow("screen_cap",screen_cap);
 		//imshow("path",drawing);
-		//imshow("path",thresholded);
+		imshow("path",thresholded);
 		waitKey(10);
 	}
 	return 0;
