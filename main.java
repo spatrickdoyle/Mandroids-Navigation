@@ -12,21 +12,20 @@ public class main {
 
 		String line;
 		String[] thetaxy;
-		int theta,x,y;
+		float theta,x,y;
 
 		parkerAvenger.attachMotor(RXTXRobot.MOTOR1,5);
-                parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
+		parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
 
-		//line = System.console().readLine();
 		Scanner scan = new Scanner(System.in);
 
 		while (true) {
-			line = scan.nextLine();//System.console().readLine();
+			line = scan.nextLine();
 			thetaxy = line.split(" ");
 
-			theta = Integer.parseInt(thetaxy[0]);
-			x = Integer.parseInt(thetaxy[1]);
-			y = Integer.parseInt(thetaxy[2]);
+			theta = Float.parseFloat(thetaxy[0]);
+			x = Float.parseFloat(thetaxy[1]);
+			y = Float.parseFloat(thetaxy[2]);
 
 			System.out.print(theta);
 			System.out.print(' ');
@@ -35,6 +34,8 @@ public class main {
 			System.out.println(y);
 
 			//parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,time*1000);
+
+			line = scan.nextLine();
 		}
 
 		//parkerAvenger.close();

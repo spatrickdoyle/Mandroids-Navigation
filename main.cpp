@@ -13,6 +13,8 @@ vector<Rect> findBiggestBlob(Mat&,int,int);
 
 int main(int argc, char *argv[]){
 	VideoCapture camera(0);
+	camera.set(CV_CAP_PROP_FRAME_WIDTH,800);
+	camera.set(CV_CAP_PROP_FRAME_HEIGHT,448);
 
 	//namedWindow("screen_cap",WINDOW_AUTOSIZE);
 	//namedWindow("path",WINDOW_AUTOSIZE);
@@ -66,8 +68,30 @@ int main(int argc, char *argv[]){
 	float TOTAL_X = 0;
 	float TOTAL_Y = 0;
 
-	char a[100];
-	cin >> a;
+	//Variables used in the Kalman filter
+	vector<float> X_hat(1,0.0);
+	vector<float> Px(1,1.0);
+	vector<float> Y_hat(1,0.0);
+	vector<float> Py(1,1.0);
+	vector<float> T_hat(1,0.0);
+	vector<float> Pt(1,1.0);
+
+	float Qx = 0.01;
+	float Rx = 10.0;
+	float Qy = 0.01;
+	float Ry = 10.0;
+	float Qt = 0.01;
+	float Rt = 10.0;
+
+	float Px_ = 0.0;
+	float Kx = 0.0;
+	float X_ = 0.0;
+	float Py_ = 0.0;
+	float Ky = 0.0;
+	float Y_ = 0.0;
+	float Pt_ = 0.0;
+	float Kt = 0.0;
+	float T_ = 0.0;
 
 	while(true) {
 		camera.read(screen_cap);
@@ -129,7 +153,7 @@ int main(int argc, char *argv[]){
 			}
 		}
 
-		if (points_abs.size() > 0) {
+		if (points_abs.size() > 1) {
 			theta = ((X.transpose()*X).inverse())*(X.transpose())*Y;
 			//cout << X << "\n\n";
 			//cout << Y << '\n';
@@ -147,8 +171,30 @@ int main(int argc, char *argv[]){
 				if (pow(theta[3],2) < 900)
 					TOTAL_Y += theta[3];
 
-			//cout << (acos(theta[0])+asin(theta[1]))/2.0 << ' ' << theta[2] << ' ' << theta[3] << '\n';
-			cout << TOTAL_THETA << ' ' << TOTAL_X << ' ' << TOTAL_Y << "\n";
+			//Here we can transform x hat to 'predict' the change that's occuring. Do this with encoders...? We can also add an error term to account for the base drift that appears to be present
+			X_ = X_hat[X_hat.size()-1];
+			Px_ = Px[Px.size()-1]+Qx;
+
+			Kx = Px_/(Px_+Rx);
+			X_hat.push_back(X_ + Kx*(TOTAL_X-X_));
+			Px.push_back((1-Kx)*Px_);
+
+			Y_ = Y_hat[Y_hat.size()-1];
+			Py_ = Py[Py.size()-1]+Qy;
+
+			Ky = Py_/(Py_+Ry);
+			Y_hat.push_back(Y_ + Ky*(TOTAL_Y-Y_));
+			Py.push_back((1-Ky)*Py_);
+
+			T_ = T_hat[T_hat.size()-1];
+			Pt_ = Pt[Pt.size()-1]+Qt;
+
+			Kt = Pt_/(Pt_+Rt);
+			T_hat.push_back(T_ + Kt*(TOTAL_THETA-T_));
+			Pt.push_back((1-Kt)*Pt_);
+
+			cout << TOTAL_THETA << ' ' << TOTAL_X << ' ' << TOTAL_Y << '\n' << endl;
+			cout << T_hat[T_hat.size()-1] << ' ' << X_hat[X_hat.size()-1] << ' ' << Y_hat[Y_hat.size()-1] << "\n\n";
 		}
 
 		//imshow("screen_cap",screen_cap);
