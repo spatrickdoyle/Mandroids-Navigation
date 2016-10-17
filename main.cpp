@@ -18,8 +18,12 @@ int main(int argc, char *argv[]){
 	camera.set(CV_CAP_PROP_FRAME_WIDTH,800);
 	camera.set(CV_CAP_PROP_FRAME_HEIGHT,448);
 
-	//namedWindow("screen_cap",WINDOW_AUTOSIZE);
-	//namedWindow("path",WINDOW_AUTOSIZE);
+	if (argc == 2) {
+		if ((argv[1] == "view")||(argv[1] == "calibrate")) {
+			namedWindow("screen_cap",WINDOW_AUTOSIZE);
+			namedWindow("path",WINDOW_AUTOSIZE);
+		}
+	}
 
 	int rl = 181;
 	int gl = 176;
@@ -40,15 +44,19 @@ int main(int argc, char *argv[]){
 	const float PI = 3.1415926535;
 
 	//Uncomment to calibrate color threshold
-	/*namedWindow("ctrl",WINDOW_AUTOSIZE);
-	createTrackbar("rl","ctrl",&rl,255);
-	createTrackbar("rh","ctrl",&rh,255);
-	createTrackbar("gl","ctrl",&gl,255);
-	createTrackbar("gh","ctrl",&gh,255);
-	createTrackbar("bl","ctrl",&bl,255);
-	createTrackbar("bh","ctrl",&bh,255);
-	createTrackbar("size_min","ctrl",&threshold_area_min,255);
-	createTrackbar("size_max","ctrl",&threshold_area_max,255);*/
+	if (argc == 2) {
+		if (argv[1] == "calibrate") {
+			namedWindow("ctrl",WINDOW_AUTOSIZE);
+			createTrackbar("rl","ctrl",&rl,255);
+			createTrackbar("rh","ctrl",&rh,255);
+			createTrackbar("gl","ctrl",&gl,255);
+			createTrackbar("gh","ctrl",&gh,255);
+			createTrackbar("bl","ctrl",&bl,255);
+			createTrackbar("bh","ctrl",&bh,255);
+			createTrackbar("size_min","ctrl",&threshold_area_min,255);
+			createTrackbar("size_max","ctrl",&threshold_area_max,255);
+		}
+	}
 
 	Mat screen_cap;
 	Mat thresholded;
@@ -70,7 +78,7 @@ int main(int argc, char *argv[]){
 	float TOTAL_X = 0;
 	float TOTAL_Y = 0;
 	setbuf(stdout, (char *)NULL);
-	
+
 	while(true) {
 		camera.read(screen_cap);
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
@@ -88,16 +96,6 @@ int main(int argc, char *argv[]){
 			}
 		}
 
-		/*for (int i = 0; i < points.size(); i++)
-			cout << points[i].x << ' ' << points[i].y << "  ";
-		cout << '\n';
-		for (int i = 0; i < points_abs.size(); i++)
-			cout << points_abs[i][0] << ' ' << points_abs[i][1] << "  ";
-		cout << '\n';
-		for (int i = 0; i < prev.size(); i++)
-			cout << prev[i][0] << ' ' << prev[i][1] << "  ";
-		cout << "\n\n";*/
-
 		if (points_abs.size() > 0) {
 			X = Eigen::MatrixXf(points_abs.size()*2,4);
 			Y = Eigen::VectorXf(points_abs.size()*2);
@@ -109,12 +107,6 @@ int main(int argc, char *argv[]){
 				//uncomment to calibrate delta
 				//cout << i << ' ' << j << ' ' << dist << '\n';
 				if (dist < delta) {
-					//cout << i << ' ' << j << ' ' << dist << '\n';
-					//line(drawing,Point(points_abs[i][0]*5 + 320,points_abs[i][1]*5 + 240),Point(prev[j][0]*5 + 320,prev[j][1]*5 + 240),Scalar(255,255,255));
-
-					//cout << points_abs[i][0] << ' ' << points_abs[i][1] << '\n';
-					//cout << prev[j][0] << ' ' << prev[j][1] << "\n\n";
-
 					X(i*2,0) = prev[j][0];
 					X(i*2,1) = -prev[j][1];
 					X(i*2,2) = 1;
@@ -133,12 +125,7 @@ int main(int argc, char *argv[]){
 
 		if (points_abs.size() > 0) {
 			theta = ((X.transpose()*X).inverse())*(X.transpose())*Y;
-			//cout << X << "\n\n";
-			//cout << Y << '\n';
-			//cout << theta << "\n\n";
-			//cout << "theta = 	" << acos(theta[0]) << ' ' << asin(theta[1]) << '\n';
-			//cout << "dx =	" << theta[2] << '\n';
-			//cout << "dy =	" << theta[3] << "\n\n\n";
+
 			if ((!isnan(theta[0]))&&(!isnan(theta[1])))
 				if (pow((acos(theta[0])+asin(theta[1]))/2.0,2) < 400)
 					TOTAL_THETA = (acos(theta[0])+asin(theta[1]))/2.0;//+= (acos(theta[0])+asin(theta[1]))/2.0;
@@ -149,37 +136,15 @@ int main(int argc, char *argv[]){
 				if (pow(theta[3],2) < 900)
 					TOTAL_Y = theta[3];//+= theta[3];
 
-			//Here we can transform x hat to 'predict' the change that's occuring. Do this with encoders...? We can also add an error term to account for the base drift that appears to be present
-			/*X_ = X_hat[X_hat.size()-1];
-			Px_ = Px[Px.size()-1]+Qx;
-
-			Kx = Px_/(Px_+Rx);
-			X_hat.push_back(X_ + Kx*(TOTAL_X-X_));
-			Px.push_back((1-Kx)*Px_);
-
-			Y_ = Y_hat[Y_hat.size()-1];
-			Py_ = Py[Py.size()-1]+Qy;
-
-			Ky = Py_/(Py_+Ry);
-			Y_hat.push_back(Y_ + Ky*(TOTAL_Y-Y_));
-			Py.push_back((1-Ky)*Py_);
-
-			T_ = T_hat[T_hat.size()-1];
-			Pt_ = Pt[Pt.size()-1]+Qt;
-
-			Kt = Pt_/(Pt_+Rt);
-			T_hat.push_back(T_ + Kt*(TOTAL_THETA-T_));
-			Pt.push_back((1-Kt)*Pt_);*/
-
-			
 			printf("%f %f %f\n",TOTAL_THETA,TOTAL_X,TOTAL_Y);
-			//cout << TOTAL_THETA << ' ' << TOTAL_X << ' ' << TOTAL_Y << '\n';
-			//cout << T_hat[T_hat.size()-1] << ' ' << X_hat[X_hat.size()-1] << ' ' << Y_hat[Y_hat.size()-1] << "\n\n";
 		}
 
-		//imshow("screen_cap",screen_cap);
-		//imshow("path",drawing);
-		//imshow("path",thresholded);
+		if (argc == 2) {
+			if ((argv[1] == "view")||(argv[1] == "calibrate")) {
+				imshow("screen_cap",screen_cap);
+				imshow("path",thresholded);
+			}
+		}
 		waitKey(10);
 	}
 	return 0;
