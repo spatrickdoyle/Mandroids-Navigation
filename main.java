@@ -3,7 +3,6 @@ import java.io.*;
 import java.util.Scanner;
 
 public class main {
-
 	public static void main(String args[]) {
 		RXTXRobot parkerAvenger = new ArduinoUno();
 		parkerAvenger.setPort("/dev/ttyS80");
@@ -22,7 +21,7 @@ public class main {
 		while (true) {
 			line = scan.nextLine();
 			thetaxy = line.split(" ");
-
+			
 			theta = Float.parseFloat(thetaxy[0]);
 			x = Float.parseFloat(thetaxy[1]);
 			y = Float.parseFloat(thetaxy[2]);
@@ -35,7 +34,7 @@ public class main {
 
 			//parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,time*1000);
 
-			line = scan.nextLine();
+			//line = scan.nextLine();
 		}
 
 		//parkerAvenger.close();

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <math.h>
 #include <eigen3/Eigen/Dense>
+#include <stdio.h>
+#include <unistd.h>
 
 using namespace cv;
 using namespace std;
@@ -31,7 +33,7 @@ int main(int argc, char *argv[]){
 	float height = 300.5;//CEILING HEIGHT IN INCHES (314.5 from ground)
 	//Relative size of blobs to detect
 	int threshold_area_min = 90;
-	int threshold_area_max = 255;
+	int threshold_area_max = 350;
 	//Relative maximum movement of the blobs each tick
 	int delta = 20;
 
@@ -67,32 +69,8 @@ int main(int argc, char *argv[]){
 	float TOTAL_THETA = 0;
 	float TOTAL_X = 0;
 	float TOTAL_Y = 0;
-
-	//Variables used in the Kalman filter
-	vector<float> X_hat(1,0.0);
-	vector<float> Px(1,1.0);
-	vector<float> Y_hat(1,0.0);
-	vector<float> Py(1,1.0);
-	vector<float> T_hat(1,0.0);
-	vector<float> Pt(1,1.0);
-
-	float Qx = 0.01;
-	float Rx = 10.0;
-	float Qy = 0.01;
-	float Ry = 10.0;
-	float Qt = 0.01;
-	float Rt = 10.0;
-
-	float Px_ = 0.0;
-	float Kx = 0.0;
-	float X_ = 0.0;
-	float Py_ = 0.0;
-	float Ky = 0.0;
-	float Y_ = 0.0;
-	float Pt_ = 0.0;
-	float Kt = 0.0;
-	float T_ = 0.0;
-
+	setbuf(stdout, (char *)NULL);
+	
 	while(true) {
 		camera.read(screen_cap);
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
@@ -153,7 +131,7 @@ int main(int argc, char *argv[]){
 			}
 		}
 
-		if (points_abs.size() > 1) {
+		if (points_abs.size() > 0) {
 			theta = ((X.transpose()*X).inverse())*(X.transpose())*Y;
 			//cout << X << "\n\n";
 			//cout << Y << '\n';
@@ -162,17 +140,17 @@ int main(int argc, char *argv[]){
 			//cout << "dx =	" << theta[2] << '\n';
 			//cout << "dy =	" << theta[3] << "\n\n\n";
 			if ((!isnan(theta[0]))&&(!isnan(theta[1])))
-				if (pow((acos(theta[0])+asin(theta[1]))/2.0,2) < 50)
-					TOTAL_THETA += (acos(theta[0])+asin(theta[1]))/2.0;
+				if (pow((acos(theta[0])+asin(theta[1]))/2.0,2) < 400)
+					TOTAL_THETA = (acos(theta[0])+asin(theta[1]))/2.0;//+= (acos(theta[0])+asin(theta[1]))/2.0;
 			if (!isnan(theta[2]))
 				if (pow(theta[2],2) < 900)
-					TOTAL_X += theta[2];
+					TOTAL_X = theta[2];//+= theta[2];
 			if (!isnan(theta[3]))
 				if (pow(theta[3],2) < 900)
-					TOTAL_Y += theta[3];
+					TOTAL_Y = theta[3];//+= theta[3];
 
 			//Here we can transform x hat to 'predict' the change that's occuring. Do this with encoders...? We can also add an error term to account for the base drift that appears to be present
-			X_ = X_hat[X_hat.size()-1];
+			/*X_ = X_hat[X_hat.size()-1];
 			Px_ = Px[Px.size()-1]+Qx;
 
 			Kx = Px_/(Px_+Rx);
@@ -191,10 +169,12 @@ int main(int argc, char *argv[]){
 
 			Kt = Pt_/(Pt_+Rt);
 			T_hat.push_back(T_ + Kt*(TOTAL_THETA-T_));
-			Pt.push_back((1-Kt)*Pt_);
+			Pt.push_back((1-Kt)*Pt_);*/
 
-			cout << TOTAL_THETA << ' ' << TOTAL_X << ' ' << TOTAL_Y << '\n' << endl;
-			cout << T_hat[T_hat.size()-1] << ' ' << X_hat[X_hat.size()-1] << ' ' << Y_hat[Y_hat.size()-1] << "\n\n";
+			
+			printf("%f %f %f\n",TOTAL_THETA,TOTAL_X,TOTAL_Y);
+			//cout << TOTAL_THETA << ' ' << TOTAL_X << ' ' << TOTAL_Y << '\n';
+			//cout << T_hat[T_hat.size()-1] << ' ' << X_hat[X_hat.size()-1] << ' ' << Y_hat[Y_hat.size()-1] << "\n\n";
 		}
 
 		//imshow("screen_cap",screen_cap);

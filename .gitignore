@@ -5,3 +5,11 @@ Mandroids-Navigation
 cmake_install.cmake
 Sprint2.class
 remote_control.class
+data1.txt
+data2.txt
+data3.txt
+main.class
+regression.py
+rotation.py
+remote.py
+server.py
