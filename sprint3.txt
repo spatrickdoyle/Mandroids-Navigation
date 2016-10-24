@@ -1,0 +1,2 @@
+up the ramp: 500 power 500 ticks 2 feet away
+hit the dispenser: 200 power 100 ticks 1 foot away

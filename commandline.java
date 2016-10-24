@@ -1,7 +1,7 @@
 import rxtxrobot.*;
 import java.io.*;
 
-public class remote_control {
+public class commandline {
 
 	public static void main(String args[]) {
 		RXTXRobot parkerAvenger = new ArduinoUno();
@@ -22,20 +22,20 @@ public class remote_control {
 
 			left = Integer.parseInt(leftrighttime[0]);
 			right = Integer.parseInt(leftrighttime[1]);
-			//time = Integer.parseInt(leftrighttime[2]);
+			time = Integer.parseInt(leftrighttime[2]);
 
 			System.out.print(left);
 			System.out.print(' ');
-			System.out.println(right);
-			//System.out.print(' ');
-			//System.out.println(time);
+			System.out.print(right);
+			System.out.print(' ');
+			System.out.println(time);
 
-			/*int initial = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
+			int initial = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 			while (Math.pow(parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1)-initial,2) < Math.pow(time,2)) {
 				//System.out.println(Math.pow(parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1)-initial,2));
 				parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,0);
-			}*/
-			parkerAvenger.runMotor(RXTXRobot.MOTOR1,right,RXTXRobot.MOTOR2,left,1000);
+			}
+			parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
 		}
 
 		//parkerAvenger.close();

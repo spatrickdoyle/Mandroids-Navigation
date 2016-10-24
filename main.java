@@ -45,12 +45,12 @@ public class main {
 
 			Kx = Px_/(Px_+R);
 			X.add(X_ + Kx*(y - (X.get(X.size()-1)-X.get(X.size()-2))));
-			Px.add((1-Kx)*Px_);
+			Px.add((1-Kx)*Px_);*/
 
-			System.out.println(y);
+			//System.out.println(y);
 			System.out.println(X.get(X.size()-1));
-			while (X.get(X.size()-1) < 60)
-				parkerAvenger.runMotor(RXTXRobot.MOTOR1,100,RXTXRobot.MOTOR2,100,1);
+			//while (y < 60)//X.get(X.size()-1) < 60)
+			//	parkerAvenger.runMotor(RXTXRobot.MOTOR1,100,RXTXRobot.MOTOR2,100,1);
 		}
 
 		//parkerAvenger.close();
