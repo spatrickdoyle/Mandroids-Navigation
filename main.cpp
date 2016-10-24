@@ -5,6 +5,7 @@
 #include <eigen3/Eigen/Dense>
 #include <stdio.h>
 #include <unistd.h>
+#include <cstring>
 
 using namespace cv;
 using namespace std;
@@ -15,11 +16,11 @@ vector<Rect> findBiggestBlob(Mat&,int,int);
 
 int main(int argc, char *argv[]){
 	VideoCapture camera(0);
-	camera.set(CV_CAP_PROP_FRAME_WIDTH,800);
-	camera.set(CV_CAP_PROP_FRAME_HEIGHT,448);
+	camera.set(CV_CAP_PROP_FRAME_WIDTH,640);//800);
+	camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);//448);
 
 	if (argc == 2) {
-		if ((argv[1] == "view")||(argv[1] == "calibrate")) {
+		if ((strcmp(argv[1],"view") == 0)||(strcmp(argv[1],"calibrate") == 0)) {
 			namedWindow("screen_cap",WINDOW_AUTOSIZE);
 			namedWindow("path",WINDOW_AUTOSIZE);
 		}
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]){
 
 	//Uncomment to calibrate color threshold
 	if (argc == 2) {
-		if (argv[1] == "calibrate") {
+		if (strcmp(argv[1],"calibrate") == 0) {
 			namedWindow("ctrl",WINDOW_AUTOSIZE);
 			createTrackbar("rl","ctrl",&rl,255);
 			createTrackbar("rh","ctrl",&rh,255);
@@ -140,7 +141,7 @@ int main(int argc, char *argv[]){
 		}
 
 		if (argc == 2) {
-			if ((argv[1] == "view")||(argv[1] == "calibrate")) {
+			if ((strcmp(argv[1],"view") == 0)||(strcmp(argv[1],"calibrate") == 0)) {
 				imshow("screen_cap",screen_cap);
 				imshow("path",thresholded);
 			}

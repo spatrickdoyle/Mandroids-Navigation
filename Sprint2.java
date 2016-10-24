@@ -42,7 +42,11 @@ public class Sprint2 {
 		//Attach motors on pins 5 and 6 and move them forward for an amount of time we will tune for 3 meters
 		r.attachMotor(RXTXRobot.MOTOR1,5);
 		r.attachMotor(RXTXRobot.MOTOR2,6);
-		r.runMotor(RXTXRobot.MOTOR1,-500,RXTXRobot.MOTOR2,-500,5400);
+		int initial = r.getEncodedMotorPosition(RXTXRobot.MOTOR1);
+		System.out.println(initial);
+		while (r.getEncodedMotorPosition(RXTXRobot.MOTOR1)-initial > -100) {
+			r.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,0);
+		}
 	}
 
 	public static void moveServoAngle(RXTXRobot r) {
