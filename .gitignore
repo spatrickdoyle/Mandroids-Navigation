@@ -3,10 +3,5 @@ Makefile
 CMakeFiles
 Mandroids-Navigation
 cmake_install.cmake
-Sprint2.class
-remote_control.class
-data1.txt
-data2.txt
-data3.txt
-main.class
-commandline.class
+*.class
+*.pyc
