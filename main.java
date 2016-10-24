@@ -11,20 +11,20 @@ public class main {
 
 		String line;
 		String[] thetaxy;
-		float theta,x,y;
+		Float theta,x,y;
 
 		//Kalman filter variables
-		float tmp[] = {0.0f,0.0f,0.0f};
+		Float tmp[] = {0.0F,0.0F,0.0F};
 		ArrayList<Float> X = new ArrayList(Arrays.asList(tmp));
-		float tmp2[] = {0.0f};
+		Float tmp2[] = {0.0F};
 		ArrayList<Float> Px = new ArrayList(Arrays.asList(tmp2));
 
-		float Q = 0.0001f;
-		float R = 0.001043f;
+		Float Q = 0.0001F;
+		Float R = 0.001043F;
 
-		float Px_ = 0.0f;
-		float Kx = 0.0f;
-		float X_ = 0.0f;
+		Float Px_ = 0.0F;
+		Float Kx = 0.0F;
+		Float X_ = 0.0F;
 
 
 		parkerAvenger.attachMotor(RXTXRobot.MOTOR1,5);
@@ -32,7 +32,11 @@ public class main {
 
 		Scanner scan = new Scanner(System.in);
 
-		while (true) {
+		Float diff;
+		Float prev = (float)parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
+		Float cur;
+
+		while (Math.pow(X.get(X.size()-1),2) < Math.pow(48,2)) {
 			line = scan.nextLine();
 			thetaxy = line.split(" ");
 
@@ -40,19 +44,26 @@ public class main {
 			x = Float.parseFloat(thetaxy[1]);
 			y = Float.parseFloat(thetaxy[2]);
 
-			X_ = X.get(X.size()-1) + (X.get(X.size()-1) - X.get(X.size()-2)) + 0.5f*((X.get(X.size()-1)-X.get(X.size()-2)) - (X.get(X.size()-2)-X.get(X.size()-3)));
+			cur = (float)parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
+			diff = prev-cur;
+			prev = cur;
+
+			System.out.println(diff);
+			X_ = X.get(X.size()-1) + (13.5F/100.0F)*diff;// + (X.get(X.size()-1) - X.get(X.size()-2)) + ((X.get(X.size()-1)-X.get(X.size()-2)) - (X.get(X.size()-2)-X.get(X.size()-3)));
 			Px_ = Px.get(Px.size()-1) + Q;
 
 			Kx = Px_/(Px_+R);
 			X.add(X_ + Kx*(y - (X.get(X.size()-1)-X.get(X.size()-2))));
-			Px.add((1-Kx)*Px_);*/
+			Px.add((1-Kx)*Px_);
 
 			//System.out.println(y);
 			System.out.println(X.get(X.size()-1));
-			//while (y < 60)//X.get(X.size()-1) < 60)
-			//	parkerAvenger.runMotor(RXTXRobot.MOTOR1,100,RXTXRobot.MOTOR2,100,1);
+			//while (X.get(X.size()-1) < 30)
+			parkerAvenger.runMotor(RXTXRobot.MOTOR1,200,RXTXRobot.MOTOR2,200,0);
 		}
 
-		//parkerAvenger.close();
+		parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+
+		parkerAvenger.close();
 	}
 }

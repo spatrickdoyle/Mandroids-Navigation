@@ -59,6 +59,7 @@ int main(int argc, char *argv[]){
 	Mat screen_cap;
 	Mat thresholded;
 	Mat drawing;
+
 	vector<Rect> points;
 	vector<vector<float>> points_abs;
 	vector<vector<float>> prev;
@@ -78,17 +79,21 @@ int main(int argc, char *argv[]){
 	setbuf(stdout, (char *)NULL);
 
 	thread capture_thread(loop_frames,ref(screen_cap));
-	system("sleep 2");
+	cin.ignore();
 
 	while(true) {
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
+
+		 if (argc == 2)
+                        if ((strcmp(argv[1],"view") == 0)||(strcmp(argv[1],"calibrate") == 0))
+				screen_cap.copyTo(drawing);
 
 		prev = points_abs;
 		points = findBiggestBlob(thresholded,threshold_area_min,threshold_area_max);
 		points_abs.resize(points.size());
 		if (points.size() > 0) {
 			for (i = 0; i < points.size(); i++) {
-				//circle(screen_cap,Point((points[i].x+(points[i].width/2)),(points[i].y+(points[i].height/2))),10,Scalar(255,0,0),-1);
+				circle(drawing,Point((points[i].x+(points[i].width/2)),(points[i].y+(points[i].height/2))),10,Scalar(255,0,0),-1);
 				if (points_abs[i].size() != 2)
 					points_abs[i].resize(2);
 				points_abs[i][0] = tan(((points[i].x+(points[i].width/2))-320)*dpp_h*PI/180.0)*height;
@@ -141,7 +146,7 @@ int main(int argc, char *argv[]){
 
 		if (argc == 2) {
 			if ((strcmp(argv[1],"view") == 0)||(strcmp(argv[1],"calibrate") == 0)) {
-				imshow("screen_cap",screen_cap);
+				imshow("screen_cap",drawing);
 				imshow("path",thresholded);
 			}
 		}
@@ -176,6 +181,7 @@ void loop_frames(Mat& img) {
 	VideoCapture camera(0);
 	camera.set(CV_CAP_PROP_FRAME_WIDTH,640);//800);
 	camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);//448);
+	camera.read(img);
 	while (true) {
 		camera.read(img);
 	}
