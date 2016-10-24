@@ -9,7 +9,4 @@ data1.txt
 data2.txt
 data3.txt
 main.class
-regression.py
-rotation.py
-remote.py
-server.py
+commandline.class
