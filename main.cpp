@@ -33,8 +33,8 @@ int main(int argc, char *argv[]){
 	int gh = 255;
 	int bh = 255;
 
-	float dpp_h = 0.0766;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 61.284 degrees
-	float dpp_v = 0.09185;//DEGREES PER PIXEL VERTICALLY//Total angle of view: 41.148 degrees
+	float dpp_h = 0.0766;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 61.284 degrees -> New measurement from 10 inches away, 640 px
+	float dpp_v = 0.09185;//DEGREES PER PIXEL VERTICALLY. Total angle of view: 41.148 degrees -> new measurement from 9 inches away, 480 px
 	float height = 300.5;//CEILING HEIGHT IN INCHES (314.5 from ground)
 	//Relative size of blobs to detect
 	int threshold_area_min = 90;
