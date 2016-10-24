@@ -6,19 +6,16 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <cstring>
+#include <thread>
 
 using namespace cv;
 using namespace std;
 
 
 vector<Rect> findBiggestBlob(Mat&,int,int);
-
+void loop_frames(Mat&);
 
 int main(int argc, char *argv[]){
-	VideoCapture camera(0);
-	camera.set(CV_CAP_PROP_FRAME_WIDTH,640);//800);
-	camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);//448);
-
 	if (argc == 2) {
 		if ((strcmp(argv[1],"view") == 0)||(strcmp(argv[1],"calibrate") == 0)) {
 			namedWindow("screen_cap",WINDOW_AUTOSIZE);
@@ -72,16 +69,18 @@ int main(int argc, char *argv[]){
 
 	int i,j;
 	float dist = delta+1;
-	camera.read(drawing);
-	drawing.setTo(Scalar(0,0,0));
+	//camera.read(drawing);
+	//drawing.setTo(Scalar(0,0,0));
 
 	float TOTAL_THETA = 0;
 	float TOTAL_X = 0;
 	float TOTAL_Y = 0;
 	setbuf(stdout, (char *)NULL);
 
+	thread capture_thread(loop_frames,ref(screen_cap));
+	system("sleep 2");
+
 	while(true) {
-		camera.read(screen_cap);
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
 
 		prev = points_abs;
@@ -89,7 +88,7 @@ int main(int argc, char *argv[]){
 		points_abs.resize(points.size());
 		if (points.size() > 0) {
 			for (i = 0; i < points.size(); i++) {
-				circle(screen_cap,Point((points[i].x+(points[i].width/2)),(points[i].y+(points[i].height/2))),10,Scalar(255,0,0),-1);
+				//circle(screen_cap,Point((points[i].x+(points[i].width/2)),(points[i].y+(points[i].height/2))),10,Scalar(255,0,0),-1);
 				if (points_abs[i].size() != 2)
 					points_abs[i].resize(2);
 				points_abs[i][0] = tan(((points[i].x+(points[i].width/2))-320)*dpp_h*PI/180.0)*height;
@@ -171,4 +170,13 @@ vector<Rect> findBiggestBlob(Mat &matImage, int threshold_area_min, int threshol
 	}
 
 	return output;
+}
+
+void loop_frames(Mat& img) {
+	VideoCapture camera(0);
+	camera.set(CV_CAP_PROP_FRAME_WIDTH,640);//800);
+	camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);//448);
+	while (true) {
+		camera.read(img);
+	}
 }
