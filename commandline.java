@@ -42,29 +42,30 @@ public class commandline {
 			System.out.println(time);
 
 			if (leftrighttime.length == 3) {
-				parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,time);
+				parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,time*1000);
 			}
 			else {
 				int initial = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 				int initial2 = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR2);
 				int thismotor,othermotor;
+				boolean one = false;
+				boolean two = false;
+
+				parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,0);
+				parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
 				while (true) {
 					thismotor = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 					othermotor = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR2);
-					if (Math.pow(thismotor-initial,2) < Math.pow(time,2)) {
-						parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,0);
-					}
-					else {
-						parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,0);
-						if (Math.pow(othermotor-initial,2) >= Math.pow(time,2)) {
-							parkerAvenger.runMotor(RXTXRobot.MOTOR2,0,0);
-							break;
-						}
-					}
-					if (Math.pow(othermotor-initial,2) < Math.pow(thismotor-initial,2))
-						parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
+					if (Math.pow(thismotor-initial,2) >= Math.pow(time,2))
+						one = true;
+					if (Math.pow(othermotor-initial2,2) >= Math.pow(time,2))
+						two = true;
+
+					if (one&&two)
+						break;
 				}
-				parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+				parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,0);
+				parkerAvenger.runMotor(RXTXRobot.MOTOR2,0,0);
 			}
 		}
 
