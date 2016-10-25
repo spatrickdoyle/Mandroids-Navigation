@@ -14,15 +14,26 @@ public class commandline {
 		int left,right,time;
 
 		parkerAvenger.attachMotor(RXTXRobot.MOTOR1,5);
-                parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
+		parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
 
 		while (true) {
 			line = System.console().readLine();
 			leftrighttime = line.split(" ");
-
-			left = Integer.parseInt(leftrighttime[0]);
-			right = Integer.parseInt(leftrighttime[1]);
-			time = Integer.parseInt(leftrighttime[2]);
+			if (leftrighttime.length == 3) {
+				left = Integer.parseInt(leftrighttime[0]);
+				right = Integer.parseInt(leftrighttime[1]);
+				time = Integer.parseInt(leftrighttime[2]);
+			}
+			else if (leftrighttime.length == 2) {
+				left = Integer.parseInt(leftrighttime[0]);
+				right = left;
+				time = Integer.parseInt(leftrighttime[1]);
+			}
+			else {
+				left = 0;
+				right = 0;
+				time = 0;
+			}
 
 			System.out.print(left);
 			System.out.print(' ');
@@ -30,12 +41,31 @@ public class commandline {
 			System.out.print(' ');
 			System.out.println(time);
 
-			int initial = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
-			while (Math.pow(parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1)-initial,2) < Math.pow(time,2)) {
-				//System.out.println(Math.pow(parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1)-initial,2));
-				parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,0);
+			if (leftrighttime.length == 3) {
+				parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,time);
 			}
-			parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+			else {
+				int initial = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
+				int initial2 = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR2);
+				int thismotor,othermotor;
+				while (true) {
+					thismotor = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
+					othermotor = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR2);
+					if (Math.pow(thismotor-initial,2) < Math.pow(time,2)) {
+						parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,0);
+					}
+					else {
+						parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,0);
+						if (Math.pow(othermotor-initial,2) >= Math.pow(time,2)) {
+							parkerAvenger.runMotor(RXTXRobot.MOTOR2,0,0);
+							break;
+						}
+					}
+					if (Math.pow(othermotor-initial,2) < Math.pow(thismotor-initial,2))
+						parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
+				}
+				parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+			}
 		}
 
 		//parkerAvenger.close();
