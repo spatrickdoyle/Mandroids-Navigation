@@ -11,7 +11,8 @@ public class commandline {
 
 		String line;
 		String[] leftrighttime;
-		int left,right,time;
+		int left,right;
+		float time;
 
 		parkerAvenger.attachMotor(RXTXRobot.MOTOR1,5);
 		parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
@@ -22,7 +23,7 @@ public class commandline {
 			if (leftrighttime.length == 3) {
 				left = Integer.parseInt(leftrighttime[0]);
 				right = Integer.parseInt(leftrighttime[1]);
-				time = Integer.parseInt(leftrighttime[2]);
+				time = Float.parseFloat(leftrighttime[2]);
 			}
 			else if (leftrighttime.length == 2) {
 				left = Integer.parseInt(leftrighttime[0]);
@@ -42,7 +43,9 @@ public class commandline {
 			System.out.println(time);
 
 			if (leftrighttime.length == 3) {
-				parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,time*1000);
+				int initial = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
+				parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,RXTXRobot.MOTOR2,right,(int)(time*1000));
+				System.out.println(parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1) - initial);
 			}
 			else {
 				int initial = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
