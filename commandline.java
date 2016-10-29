@@ -58,9 +58,6 @@ public class commandline {
 				double v1,v2;
 
 				while (true) {
-					parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,0);
-					parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
-
 					prev1 = thismotor;
 					prev2 = othermotor;
 					thismotor = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
@@ -74,17 +71,15 @@ public class commandline {
 					if (one&&two)
 						break;
 
-					v1 = Math.pow(thismotor-prev1,2);
-					v2 = Math.pow(othermotor-prev2,2);
+					v1 = thismotor-prev1;
+					v2 = othermotor-prev2;
 
-					if (v1 < v2) {
-						left += 10;
-						right -= 10;
-					}
-					else if (v2 < v1) {
-						left -= 10;
-						right += 10;
-					}
+					left += (v2-v1)*20;
+					right += (v1-v2)*20;
+					parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,0);
+                                        parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
+
+					System.out.println(v1+" "+v2+" "+left+" "+right);
 				}
 				parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,0);
 				parkerAvenger.runMotor(RXTXRobot.MOTOR2,0,0);
