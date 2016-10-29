@@ -56,54 +56,105 @@ print "dy: "+str(theta.tolist()[3][0])'''
 
 import regression
 
-data_file = open("data1.txt","r")
-lines = data_file.read().split('\n')
-data_file.close()
-print lines[0]
-lines = lines[1:-1]
+def kalman():
+        data_file = open("data1.txt","r")
+        lines = data_file.read().split('\n')
+        data_file.close()
+        print lines[0]
+        lines = lines[1:-1]
 
-measurement = 2
+        measurement = 2
 
-data = []
-total = [0.0]
+        data = []
+        total = [0.0]
 
-for line in range(len(lines)):
-	data.append(float(lines[line].split()[measurement]))
-	total.append(total[-1]+data[-1])
+        for line in range(len(lines)):
+	        data.append(float(lines[line].split()[measurement]))
+	        total.append(total[-1]+data[-1])
 
-variance = sum([(i - sum(data)/len(data))**2 for i in data])/len(data)
+                variance = sum([(i - sum(data)/len(data))**2 for i in data])/len(data)
 
-X = [0.0,0.0,0.0,0.0]
-P = [0.0]
+                X = [0.0,0.0,0.0,0.0]
+                P = [0.0]
 
-#Q = ~0.0001 seems to work pretty well
-Q = 0.0001#process variance
-R = 0.00104272358489#measurement variance
+        #Q = ~0.0001 seems to work pretty well
+        Q = 0.0001#process variance
+        R = 0.00104272358489#measurement variance
 
-P_ = 0.0
-K = 0.0
-X_ = 0.0
+        P_ = 0.0
+        K = 0.0
+        X_ = 0.0
 
-for point in range(len(data)):
-	X_ = X[-1] + (X[-1]-X[-2]) + (1.0/2.0)*((X[-1]-X[-2])-(X[-2]-X[-3]))
-	P_ = P[-1] + Q
+        for point in range(len(data)):
+	        X_ = X[-1] + (X[-1]-X[-2]) + (1.0/2.0)*((X[-1]-X[-2])-(X[-2]-X[-3]))
+	        P_ = P[-1] + Q
 
-	K = P_/(P_+R)
-	X.append(X_ + K*(data[point] - (X[-1]-X[-2])))
-	P.append((1-K)*P_)
+	        K = P_/(P_+R)
+	        X.append(X_ + K*(data[point] - (X[-1]-X[-2])))
+	        P.append((1-K)*P_)
 
-print X[-1]
+        print X[-1]
 
-X = X[4:]
-P = P[1:]
-total = total[1:]
+        X = X[4:]
+        P = P[1:]
+        total = total[1:]
 
-#reg = regression.calc_exact(len(data)-1,range(len(data)),data)
-#reg = [reg[i]*i for i in range(len(reg))][1:]
-#data_reg = [(np.asarray([i**j for j in range(len(reg))])*reg).tolist()[0][0] for i in range(len(data))]
+        #reg = regression.calc_exact(len(data)-1,range(len(data)),data)
+        #reg = [reg[i]*i for i in range(len(reg))][1:]
+        #data_reg = [(np.asarray([i**j for j in range(len(reg))])*reg).tolist()[0][0] for i in range(len(data))]
 
-plt.plot(range(len(data)),data,'b-')
-plt.plot(range(len(data)),total,'g-')
-plt.plot(range(len(data)),X,'r-')
+        plt.plot(range(len(data)),data,'b-')
+        plt.plot(range(len(data)),total,'g-')
+        plt.plot(range(len(data)),X,'r-')
 
-plt.show()
+        plt.show()
+
+def encoders():
+        colors = ['r','g','b','c','m','y','k']
+
+        raw_data = file("encoderdata.txt","r").read().split('\n\n')
+        X = []
+        Y = []
+        for i in raw_data[0].split('\n'):
+                if i[-1] == ':':
+                        X.append(i[:-1])
+                        X.append([])
+                        Y.append(i[:-1])
+                        Y.append([])
+                else:
+                        a = i.split()
+                        X[-1].append(int(a[0]))
+                        Y[-1].append(float(a[1]))
+
+        meta_X = []
+        B = []
+        M = []
+
+        #plt.subplot(311)
+        for i in range(len(X)/2):
+                mb = regression.calc(1,X[i*2 + 1],Y[i*2 + 1],10)
+                meta_X.append(int(X[i*2]))
+                B.append(mb[0])
+                M.append(mb[1])
+                plt.plot(range(301),[j*mb[1] + mb[0] for j in range(301)],colors[i])
+                plt.plot(X[i*2 + 1],Y[i*2 + 1],colors[i]+'o')
+
+        mmb = regression.calc(1,[j for i in X[1::2] for j in i],[l for k in Y[1::2] for l in k])
+        print mmb
+        plt.plot(range(301),[j*mmb[1] + mmb[0] for j in range(301)],colors[-1])
+
+        '''plt.subplot(312)
+        plt.plot(meta_X,M,'yo')
+        ms = regression.calc(2,meta_X,M,10)
+        print ms
+        plt.plot(range(0,501),[ms[0] + ms[1]*i + ms[2]*(i**2) for i in range(0,501)],'y-')
+
+        plt.subplot(313)
+        plt.plot(meta_X,B,'bo')
+        bs = regression.calc(2,meta_X,B,10)
+        print bs
+        plt.plot(range(0,501),[bs[0] + bs[1]*i + bs[2]*(i**2) for i in range(0,501)],'b-')'''
+
+        plt.show()
+
+encoders()

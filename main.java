@@ -6,7 +6,7 @@ class Navigation implements Runnable {
 	private Thread t;
 	private String threadName;
 
-	private Float inches_per_tick = 0.135F;
+	private Float inches_per_tick = 0.123F;
 	protected Float X_NOW,Y_NOW,THETA_NOW;
 
 	Navigation(String name) {

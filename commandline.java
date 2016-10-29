@@ -50,15 +50,22 @@ public class commandline {
 			else {
 				int initial = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 				int initial2 = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR2);
-				int thismotor,othermotor;
+				int thismotor = initial;
+				int othermotor = initial2;;
+				int prev1,prev2;
 				boolean one = false;
 				boolean two = false;
+				double v1,v2;
 
-				parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,0);
-				parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
 				while (true) {
+					parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,0);
+					parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
+
+					prev1 = thismotor;
+					prev2 = othermotor;
 					thismotor = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 					othermotor = parkerAvenger.getEncodedMotorPosition(RXTXRobot.MOTOR2);
+
 					if (Math.pow(thismotor-initial,2) >= Math.pow(time,2))
 						one = true;
 					if (Math.pow(othermotor-initial2,2) >= Math.pow(time,2))
@@ -66,6 +73,18 @@ public class commandline {
 
 					if (one&&two)
 						break;
+
+					v1 = Math.pow(thismotor-prev1,2);
+					v2 = Math.pow(othermotor-prev2,2);
+
+					if (v1 < v2) {
+						left += 10;
+						right -= 10;
+					}
+					else if (v2 < v1) {
+						left -= 10;
+						right += 10;
+					}
 				}
 				parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,0);
 				parkerAvenger.runMotor(RXTXRobot.MOTOR2,0,0);
