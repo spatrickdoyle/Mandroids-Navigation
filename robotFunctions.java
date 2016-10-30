@@ -1,26 +1,17 @@
 import rxtxrobot.*;
 import java.io.*;
 
-public class Sprint2 {
+public class robotFunctions {
+	public static RXTXRobot init() {
+		RXTXRobot theRobot = new ArduinoUno();
+		theRobot.setPort("/dev/ttyS80");
+		theRobot.connect();
+		theRobot.refreshAnalogPins();
 
-	public static void main(String args[]) {
-		RXTXRobot parkerAvenger = new ArduinoUno();
-		parkerAvenger.setPort("/dev/ttyS80");
-		parkerAvenger.connect();
-		parkerAvenger.refreshAnalogPins();
-
-		//turn(parkerAvenger);
-		//raiseBoom(parkerAvenger);
-		move3Meters(parkerAvenger);
-		//moveServoAngle(parkerAvenger);
-		//Sonar(parkerAvenger);
-		//BumpSensor(parkerAvenger);
-		//TempTester(parkerAvenger);
-		//WindTester(parkerAvenger);
-
-		parkerAvenger.close();
+		theRobot.attachMotor(RXTXRobot.MOTOR1,5);
+		theRobot.attachMotor(RXTXRobot.MOTOR2,6);
+		return theRobot;
 	}
-
 
 	public static void turn(RXTXRobot r) {
 		r.attachMotor(RXTXRobot.MOTOR1,5);

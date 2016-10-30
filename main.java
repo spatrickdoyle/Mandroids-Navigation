@@ -12,20 +12,10 @@ public class main {
 		position.start_encoders();
 
 		//Actually do stuff
-		//while (position.Y_NOW < 30)
-		//	theRobot.runMotor(RXTXRobot.MOTOR1,200,RXTXRobot.MOTOR2,200,0);
+		position.go(0,30,0);
+		theRobot.sleep(3);
+		position.go(0,0,90);
 
 		//Close connection
 		theRobot.close();
-	}
-
-		/*public static void init() {
-		theRobot = new ArduinoUno();
-		theRobot.setPort("/dev/ttyS80");
-		theRobot.connect();
-		theRobot.refreshAnalogPins();
-
-		theRobot.attachMotor(RXTXRobot.MOTOR1,5);
-		theRobot.attachMotor(RXTXRobot.MOTOR2,6);
-		}*/
 }
