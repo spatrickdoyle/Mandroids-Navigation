@@ -7,6 +7,7 @@ class Navigation implements Runnable {
 	private String threadName;
 
 	private Float inches_per_tick = 0.123F;
+	private Float robot_width = 13.25F;
 	protected Float X_NOW,Y_NOW,THETA_NOW;
 
 	Navigation(String name) {
@@ -54,30 +55,37 @@ class Navigation implements Runnable {
 		Float diff1,diff2,cur1,cur2;
 		Float prev1 = (float)main.theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 		Float prev2 = (float)main.theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR2);
+		Float encoder_X;
+		Float encoder_Y;
+		Float encoder_T;
 
-		while (Math.pow(X.get(X.size()-1),2) < Math.pow(48,2)) {
-			line = scan.nextLine();
+		while (true) {
+			/*line = scan.nextLine();
 			thetaxy = line.split(" ");
 
 			theta = Float.parseFloat(thetaxy[0]);
 			x = Float.parseFloat(thetaxy[1]);
-			y = Float.parseFloat(thetaxy[2]);
+			y = Float.parseFloat(thetaxy[2]);*/
 
 			cur1 = (float)main.theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
-			diff1 = prev1-cur1;
+			diff1 = inches_per_tick*(prev1-cur1);
 			prev1 = cur1;
 
 			cur2 = (float)main.theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR2);
-			diff2 = prev2-cur2;
+			diff2 = inches_per_tick*(prev2-cur2);
 			prev2 = cur2;
 
-			X_ = X.get(X.size()-1) + (X.get(X.size()-1) - X.get(X.size()-2)) + ((X.get(X.size()-1)-X.get(X.size()-2)) - (X.get(X.size()-2)-X.get(X.size()-3)))/2.0F;
+			encoder_X = ((robot_width/2.0F)+((cur2*robot_width)/(cur1-cur2)))*(Math.cos((cur1-cur2)/robot_width)+1);
+			encoder_Y = ((robot_width/2.0F)+((cur2*robot_width)/(cur1-cur2)))*Math.sin((cur1-cur2)/robot_width);
+			encoder_T = 180-((cur1-cur2)/robot_width);
+
+			/*X_ = X.get(X.size()-1) + encoder_X;// + (X.get(X.size()-1) - X.get(X.size()-2)) + ((X.get(X.size()-1)-X.get(X.size()-2)) - (X.get(X.size()-2)-X.get(X.size()-3)))/2.0F;
 			Px_ = Px.get(Px.size()-1) + Q;
 
-			Y_ = Y.get(Y.size()-1) + inches_per_tick*(diff1+diff2)/2.0F;// + (Y.get(Y.size()-1) - Y.get(Y.size()-2)) + ((Y.get(Y.size()-1)-Y.get(Y.size()-2)) - (Y.get(Y.size()-2)-Y.get(Y.size()-3)))/2.0F;
+			Y_ = Y.get(Y.size()-1) + encoder_Y;// + (Y.get(Y.size()-1) - Y.get(Y.size()-2)) + ((Y.get(Y.size()-1)-Y.get(Y.size()-2)) - (Y.get(Y.size()-2)-Y.get(Y.size()-3)))/2.0F;
 			Py_ = Py.get(Py.size()-1) + Q;
 
-			T_ = T.get(T.size()-1) + (T.get(T.size()-1) - T.get(T.size()-2)) + ((T.get(T.size()-1)-T.get(T.size()-2)) - (T.get(T.size()-2)-T.get(T.size()-3)))/2.0F;
+			T_ = T.get(T.size()-1) + encoder_T;// + (T.get(T.size()-1) - T.get(T.size()-2)) + ((T.get(T.size()-1)-T.get(T.size()-2)) - (T.get(T.size()-2)-T.get(T.size()-3)))/2.0F;
 			Pt_ = Pt.get(Pt.size()-1) + Q;
 
 			Kx = Px_/(Px_+R);
@@ -90,11 +98,11 @@ class Navigation implements Runnable {
 
 			Kt = Pt_/(Pt_+R);
 			T.add(T_ + Kt*(theta - (T.get(T.size()-1)-T.get(T.size()-2))));
-			Pt.add((1-Kt)*Pt_);
+			Pt.add((1-Kt)*Pt_);*/
 
-			X_NOW = X.get(X.size()-1);
-			Y_NOW = Y.get(Y.size()-1);
-			THETA_NOW = T.get(T.size()-1);
+			X_NOW += encoder_X;//X.get(X.size()-1);
+			Y_NOW += encoder_Y;//Y.get(Y.size()-1);
+			THETA_NOW += encoder_T;//T.get(T.size()-1);
 		}
 	}
 
@@ -122,8 +130,9 @@ public class main {
 		init();
 
 		//Actually do stuff
-		while (Math.pow(position.Y_NOW,2) < Math.pow(48,2))
-			theRobot.runMotor(RXTXRobot.MOTOR1,300,RXTXRobot.MOTOR2,300,0);
+		while (position.Y_NOW < 30)
+			theRobot.runMotor(RXTXRobot.MOTOR1,200,RXTXRobot.MOTOR2,200,0);
+		while (position.
 
 		//Close connection
 		theRobot.close();
