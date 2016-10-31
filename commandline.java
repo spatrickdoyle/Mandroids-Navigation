@@ -30,6 +30,11 @@ public class commandline {
 				right = left;
 				time = Integer.parseInt(leftrighttime[1]);
 			}
+			else if (leftrighttime.length == 1) {
+				left = 200*(Integer.parseInt(leftrighttime[0])/Math.abs(Integer.parseInt(leftrighttime[0])));
+				right = -left;
+				time = Integer.parseInt(leftrighttime[0]);
+			}
 			else {
 				left = 0;
 				right = 0;
@@ -74,12 +79,12 @@ public class commandline {
 					v1 = thismotor-prev1;
 					v2 = othermotor-prev2;
 
-					left += (v2-v1);
-					right += (v1-v2);
+					left += (v2-v1)*(left/Math.abs(left));
+					right += (v1-v2)*(right/Math.abs(right));
 					parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,0);
-                                        parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
+					parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
 
-					System.out.println(v1+" "+v2+" "+left+" "+right);
+					//System.out.println(v1+" "+v2+" "+left+" "+right);
 				}
 				parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,0);
 				parkerAvenger.runMotor(RXTXRobot.MOTOR2,0,0);
