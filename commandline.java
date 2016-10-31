@@ -74,8 +74,8 @@ public class commandline {
 					v1 = thismotor-prev1;
 					v2 = othermotor-prev2;
 
-					left += (v2-v1)*20;
-					right += (v1-v2)*20;
+					left += (v2-v1);
+					right += (v1-v2);
 					parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,0);
                                         parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
 

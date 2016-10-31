@@ -10,6 +10,11 @@ public class robotFunctions {
 
 		theRobot.attachMotor(RXTXRobot.MOTOR1,5);
 		theRobot.attachMotor(RXTXRobot.MOTOR2,6);
+
+		//System.out.println(theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1));
+		//theRobot.runMotor(RXTXRobot.MOTOR1,200,RXTXRobot.MOTOR2,200,2000);
+		//System.out.println(theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1));
+
 		return theRobot;
 	}
 

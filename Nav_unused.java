@@ -5,7 +5,6 @@ import java.util.*;
 public class Navigation implements Runnable {
 	private Thread t;
 	private String threadName;
-	private RXTXRobot theRobot;
 
 	private double inches_per_tick = 0.123;
 	private double robot_width = 13.25;
@@ -14,9 +13,8 @@ public class Navigation implements Runnable {
 
 	private double X_NOW,Y_NOW,THETA_NOW;
 
-	Navigation(String name, RXTXRobot r) {
+	Navigation(String name) {
 		threadName = name;
-		theRobot = r;
 	}
 
 	public void run() {
@@ -63,9 +61,10 @@ public class Navigation implements Runnable {
 		double Kt = 0.0;
 		double T_ = 0.0;*/
 
-		double diff1,diff2,cur1,cur2;
-		double prev1 = theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
-		double prev2 = theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR2);
+		double diff1,diff2;
+		int cur1,cur2;
+		int prev1 = main.theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
+		int prev2 = main.theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR2);
 		double encoder_X;
 		double encoder_Y;
 		double encoder_T;
@@ -80,12 +79,11 @@ public class Navigation implements Runnable {
 				x = Double.parseDouble(thetaxy[1]);
 				y = Double.parseDouble(thetaxy[2]);
 			}*/
-
-			cur1 = theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
+			cur1 = main.theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 			diff1 = inches_per_tick*(prev1-cur1);
 			prev1 = cur1;
 
-			cur2 = theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR2);
+			cur2 = main.theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR2);
 			diff2 = inches_per_tick*(prev2-cur2);
 			prev2 = cur2;
 
@@ -148,20 +146,22 @@ public class Navigation implements Runnable {
 
 	public void go(double x, double y, double th) {
 		if (y > Y_NOW) {
-			while (Y_NOW < y)
-				theRobot.runMotor(RXTXRobot.MOTOR1,200,RXTXRobot.MOTOR2,200,0);
+			while (Y_NOW < y) {
+				System.out.println(Y_NOW);
+				main.theRobot.runMotor(RXTXRobot.MOTOR1,200,RXTXRobot.MOTOR2,200,0);
+			}
 		}
 		else if (y < Y_NOW) {
 			while (Y_NOW > y)
-				theRobot.runMotor(RXTXRobot.MOTOR1,-200,RXTXRobot.MOTOR2,-200,0);
+				main.theRobot.runMotor(RXTXRobot.MOTOR1,-200,RXTXRobot.MOTOR2,-200,0);
 		}
 		else if (th > THETA_NOW) {
 			while (THETA_NOW < th)
-				theRobot.runMotor(RXTXRobot.MOTOR1,200,RXTXRobot.MOTOR2,-200,0);
+				main.theRobot.runMotor(RXTXRobot.MOTOR1,200,RXTXRobot.MOTOR2,-200,0);
 		}
 		else if (th < THETA_NOW) {
 			while (THETA_NOW > th)
-				theRobot.runMotor(RXTXRobot.MOTOR1,-200,RXTXRobot.MOTOR2,200,0);
+				main.theRobot.runMotor(RXTXRobot.MOTOR1,-200,RXTXRobot.MOTOR2,200,0);
 		}
 	}
 }
