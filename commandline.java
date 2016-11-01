@@ -1,5 +1,6 @@
 import rxtxrobot.*;
 import java.io.*;
+import java.util.*;
 
 public class commandline {
 
@@ -17,8 +18,10 @@ public class commandline {
 		parkerAvenger.attachMotor(RXTXRobot.MOTOR1,5);
 		parkerAvenger.attachMotor(RXTXRobot.MOTOR2,6);
 
+		Scanner scan = new Scanner(System.in);
+
 		while (true) {
-			line = System.console().readLine();
+			line = scan.nextLine();
 			leftrighttime = line.split(" ");
 			if (leftrighttime.length == 3) {
 				left = Integer.parseInt(leftrighttime[0]);
@@ -76,15 +79,15 @@ public class commandline {
 					if (one&&two)
 						break;
 
-					v1 = thismotor-prev1;
-					v2 = othermotor-prev2;
+					v1 = (thismotor-prev1)*(left/Math.abs(left));
+					v2 = (othermotor-prev2)*(right/Math.abs(right));
 
-					left += (v2-v1)*(left/Math.abs(left));
-					right += (v1-v2)*(right/Math.abs(right));
+					left += (v2-v1);//*(left/Math.abs(left));
+					right += (v1-v2);//*(right/Math.abs(right));
 					parkerAvenger.runMotor(RXTXRobot.MOTOR1,left,0);
 					parkerAvenger.runMotor(RXTXRobot.MOTOR2,right,0);
 
-					//System.out.println(v1+" "+v2+" "+left+" "+right);
+					System.out.println(v1+" "+v2+" "+left+" "+right+" "+(thismotor-initial)+" "+(othermotor-initial2));
 				}
 				parkerAvenger.runMotor(RXTXRobot.MOTOR1,0,0);
 				parkerAvenger.runMotor(RXTXRobot.MOTOR2,0,0);
