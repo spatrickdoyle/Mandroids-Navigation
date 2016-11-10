@@ -2,6 +2,30 @@ import rxtxrobot.*;
 import java.io.*;
 
 public class robotFunctions {
+	public static void main(String[] args) {
+		//RXTXRobot theRobot = init();
+		RXTXRobot theRobot = new ArduinoUno();
+		theRobot.setPort("/dev/ttyS80");
+		theRobot.connect();
+		theRobot.refreshAnalogPins();
+
+		theRobot.attachMotor(RXTXRobot.MOTOR1,5);
+		theRobot.attachMotor(RXTXRobot.MOTOR2,6);
+		theRobot.attachMotor(RXTXRobot.MOTOR3,10);
+
+		theRobot.attachServo(RXTXRobot.SERVO1,8);
+
+		theRobot.runMotor(RXTXRobot.MOTOR1,300,RXTXRobot.MOTOR2,300,2000);
+		//move(theRobot);
+		//raiseBoom(theRobot);
+		//TempTester(theRobot);
+		//WindTester(theRobot);
+		//lowerBoom(theRobot);
+		//move(theRobot);
+		//theRobot.getConductivity();
+		//dropBall(theRobot);
+	}
+
 	public static RXTXRobot init() {
 		RXTXRobot theRobot = new ArduinoUno();
 		theRobot.setPort("/dev/ttyS80");
@@ -10,10 +34,9 @@ public class robotFunctions {
 
 		theRobot.attachMotor(RXTXRobot.MOTOR1,5);
 		theRobot.attachMotor(RXTXRobot.MOTOR2,6);
+		theRobot.attachMotor(RXTXRobot.MOTOR3,10);
 
-		//System.out.println(theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1));
-		//theRobot.runMotor(RXTXRobot.MOTOR1,200,RXTXRobot.MOTOR2,200,2000);
-		//System.out.println(theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1));
+		theRobot.attachServo(RXTXRobot.SERVO1,8);
 
 		return theRobot;
 	}
@@ -25,36 +48,30 @@ public class robotFunctions {
 	}
 
 	public static void raiseBoom(RXTXRobot r) {
-		//Connect the servos to the Arduino to pin 8
-		r.attachServo(RXTXRobot.SERVO1,8);
-		r.moveServo(RXTXRobot.SERVO1,90);
-		//Move the servo a certain amount of time to raise the boom
-		r.moveServo(RXTXRobot.SERVO1,179);
-		r.sleep(5000);
-		r.moveServo(RXTXRobot.SERVO1,90);
+		r.runMotor(RXTXRobot.MOTOR3,150,10000);
+	}
+	public static void lowerBoom(RXTXRobot r) {
+		r.runMotor(RXTXRobot.MOTOR3,-100,5500);
 	}
 
-	public static void move3Meters(RXTXRobot r) {
-		//Attach motors on pins 5 and 6 and move them forward for an amount of time we will tune for 3 meters
-		r.attachMotor(RXTXRobot.MOTOR1,5);
-		r.attachMotor(RXTXRobot.MOTOR2,6);
+	public static void move(RXTXRobot r) {
 		int initial = r.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 		System.out.println(initial);
-		while (r.getEncodedMotorPosition(RXTXRobot.MOTOR1)-initial > -100) {
-			r.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,0);
+		while (Math.pow(r.getEncodedMotorPosition(RXTXRobot.MOTOR1)-initial,2) < Math.pow(100,2)) {
+			r.runMotor(RXTXRobot.MOTOR1,200,RXTXRobot.MOTOR2,200,0);
 		}
 	}
 
-	public static void moveServoAngle(RXTXRobot r) {
-		//Connect the servos to the Arduino to pin 9
-		r.attachServo(RXTXRobot.SERVO1,7);
-		//Move the servo to the specified angle
+	public static moveArm(RXTXRobot r) {
+		r.moveServo(RXTXRobot.SERVO2,180);
+		r.sleep(2000);
+		r.moveServo(RXTXRobot.SERVO2,90);
+	}
+
+	public static void dropBall(RXTXRobot r) {
 		r.moveServo(RXTXRobot.SERVO1,0);
-		r.sleep(1000);
-		r.moveServo(RXTXRobot.SERVO1,180);
-		r.sleep(1000);
-		r.moveServo(RXTXRobot.SERVO1,75);
-		r.sleep(1000);
+		r.sleep(5000);
+		r.moveServo(RXTXRobot.SERVO1,90);
 	}
 
 	public static void Sonar(RXTXRobot r) {
@@ -79,7 +96,7 @@ public class robotFunctions {
 
 	public static void TempTester(RXTXRobot r) {
 		AnalogPin temp = r.getAnalogPin(0);
-		double roomTemp = (temp.getValue() - 796.6969697)/-9.212121212;
+		double roomTemp = temp.getValue()*(-0.15) + 106.734;
 
 		System.out.println("Sensor " + 0 + " has value: " + temp.getValue());
 		System.out.println("The temperature is " + roomTemp + " degrees Celsius.");
@@ -88,10 +105,10 @@ public class robotFunctions {
 	public static void WindTester(RXTXRobot r) {
 		AnalogPin wind = r.getAnalogPin(2);
 		AnalogPin temp = r.getAnalogPin(0);
-		System.out.println("Sensor " + 2 + " has value: " + wind.getValue());
-		double roomTemp = (temp.getValue() - 796.6969697)/-9.212121212;
-		double windTemp = (wind.getValue() - 796.6969697)/-9.212121212;
+		//System.out.println("Sensor " + 2 + " has value: " + wind.getValue());
+		double roomTemp = temp.getValue()*(-0.15) + 106.734;
+		double windTemp = wind.getValue()*(-0.152) + 102.778;
 		double difference = (windTemp - roomTemp);
-		System.out.println("Temperature difference is " + difference);
+		System.out.println("Wind speed is " + (difference*1.002 - 0.928) + " knots");
 	}
 }
