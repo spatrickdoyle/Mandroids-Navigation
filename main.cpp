@@ -33,6 +33,7 @@ int main(int argc, char *argv[]){
 	float dpp_h = 0.069;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 64.01 degrees
 	float dpp_v = 0.071;//DEGREES PER PIXEL VERTICALLY. Total angle of view: 49.74 degrees
 	float height = 300.0;//CEILING HEIGHT IN INCHES (314.5 from ground)
+	float camera_angle = 22;//ANGLE THE CAMERA LINE OF SIGHT MAKES WITH THE VERTICAL in degrees
 	//Relative size of blobs to detect
 	int threshold_area_min = 90;
 	int threshold_area_max = 350;
@@ -91,8 +92,6 @@ int main(int argc, char *argv[]){
 
 		prev = points_abs;
 		points = findBiggestBlob(thresholded,threshold_area_min,threshold_area_max);
-		cout << prev[0] << ' ' << prev[1] << ' ' << prev[2] << '\n';
-		cout << points[0] << ' ' << points[1] << ' ' << points[2] << '\n';
 		points_abs.resize(points.size());
 		if (points.size() > 0) {
 			for (i = 0; i < points.size(); i++) {
@@ -100,7 +99,7 @@ int main(int argc, char *argv[]){
 				if (points_abs[i].size() != 2)
 					points_abs[i].resize(2);
 				points_abs[i][0] = tan(((points[i].x+(points[i].width/2))-320)*dpp_h*PI/180.0)*height;
-				points_abs[i][1] = tan(((points[i].y+(points[i].height/2))-240)*dpp_v*PI/180.0)*height;
+				points_abs[i][1] = tan(camera_angle-(((points[i].y+(points[i].height/2))-240)*dpp_v*PI/180.0))*height;
 			}
 		}
 
@@ -131,7 +130,7 @@ int main(int argc, char *argv[]){
 			}
 		}
 
-		if (points_abs.size() > 0) {
+		if (points_abs.size() > 1) {
 			theta = ((X.transpose()*X).inverse())*(X.transpose())*Y;
 
 			if ((!isnan(theta[0]))&&(!isnan(theta[1])))
