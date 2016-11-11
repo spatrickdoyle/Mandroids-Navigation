@@ -23,20 +23,20 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	int rl = 0;
-	int gl = 0;
-	int bl = 81;
-	int rh = 255;
-	int gh = 255;
-	int bh = 255;
+	int rl = 120;
+	int gl = 120;
+	int bl = 120;
+	int rh = 121;
+	int gh = 121;
+	int bh = 121;
 
-	float dpp_h = 0.069;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 64.01 degrees
-	float dpp_v = 0.071;//DEGREES PER PIXEL VERTICALLY. Total angle of view: 49.74 degrees
+	float dpp_h = 0.069;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 44 degrees
+	float dpp_v = 0.071;//DEGREES PER PIXEL VERTICALLY. Total angle of view: 34 degrees
 	float height = 300.0;//CEILING HEIGHT IN INCHES (314.5 from ground)
 	float camera_angle = 22;//ANGLE THE CAMERA LINE OF SIGHT MAKES WITH THE VERTICAL in degrees
 	//Relative size of blobs to detect
-	int threshold_area_min = 90;
-	int threshold_area_max = 350;
+	int threshold_area_min = 130;
+	int threshold_area_max = 255;
 	//Relative maximum movement of the blobs each tick
 	int delta = 20;
 
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]){
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
 
 		 if (argc == 2)
-                        if ((strcmp(argv[1],"view") == 0)||(strcmp(argv[1],"calibrate") == 0))
+            if ((strcmp(argv[1],"view") == 0)||(strcmp(argv[1],"calibrate") == 0))
 				screen_cap.copyTo(drawing);
 
 		prev = points_abs;
@@ -99,9 +99,13 @@ int main(int argc, char *argv[]){
 				if (points_abs[i].size() != 2)
 					points_abs[i].resize(2);
 				points_abs[i][0] = tan(((points[i].x+(points[i].width/2))-320)*dpp_h*PI/180.0)*height;
-				points_abs[i][1] = tan(camera_angle-(((points[i].y+(points[i].height/2))-240)*dpp_v*PI/180.0))*height;
+				points_abs[i][1] = tan((camera_angle-(((points[i].y+(points[i].height/2))-240)*dpp_v))*PI/180.0)*height;
 			}
 		}
+
+		/*for (int i = 0; i < points_abs.size(); i++)
+			cout << points_abs[i][0] << ' ' << points_abs[i][1] << '\n';
+			cout << '\n';*/
 
 		if (points_abs.size() > 0) {
 			X = Eigen::MatrixXf(points_abs.size()*2,4);
@@ -161,6 +165,7 @@ int main(int argc, char *argv[]){
 vector<Rect> findBiggestBlob(Mat &matImage, int threshold_area_min, int threshold_area_max) {
 	Mat img_clone = matImage.clone();
 	vector<Rect> output;
+	Rect ret;
 
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
@@ -169,10 +174,17 @@ vector<Rect> findBiggestBlob(Mat &matImage, int threshold_area_min, int threshol
 
 	for(int i = 0; i < contours.size(); i++){
 		double a = contourArea(contours[i], false);
+		ret = boundingRect(contours[i]);
 		//Uncomment to calibrate size of blobs
 		//cout << a << '\n';
 		if ((a > threshold_area_min)&&(a < threshold_area_max)) {
-			output.push_back(boundingRect(contours[i]));
+			//cout << ((double)ret.width)/ret.height << '\n';
+			if (abs(1-(((double)ret.width)/ret.height)) < 0.4) {
+				//cout << abs(a - pow(ret.width/2.0,2)*3.14159) << '\n';
+				if ((abs(a - pow(ret.width/2.0,2)*3.14159) < 100)&&(abs(a - pow(ret.width/2.0,2)*3.14159) > 10)) {
+					output.push_back(ret);
+				}
+			}
 		}
 	}
 
@@ -180,7 +192,7 @@ vector<Rect> findBiggestBlob(Mat &matImage, int threshold_area_min, int threshol
 }
 
 void loop_frames(Mat& img) {
-	VideoCapture camera(0);
+	VideoCapture camera(1);
 	camera.set(CV_CAP_PROP_FRAME_WIDTH,640);//800);
 	camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);//448);
 	camera.read(img);

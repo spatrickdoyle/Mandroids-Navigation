@@ -36,19 +36,19 @@ class Navigation implements Runnable {
 			x = Double.parseDouble(thetaxy[1]);
 			y = Double.parseDouble(thetaxy[2]);
 
-			//X_NOW += x;
-			//Y_NOW += y;
-			//THETA_NOW += theta;
-			X_PREV2 = X_PREV1;
+			X_NOW += x;
+			Y_NOW += y;
+			THETA_NOW += theta;
+			/*X_PREV2 = X_PREV1;
 			X_PREV1 = X_NOW;
 			Y_PREV2 = Y_PREV1;
-                        Y_PREV1 = Y_NOW;
+            Y_PREV1 = Y_NOW;
 			THETA_PREV2 = THETA_PREV1;
-                        THETA_PREV1 = THETA_NOW;
+            THETA_PREV1 = THETA_NOW;
 
 			X_NOW = X.tick(x,(X_NOW-X_PREV1) + ((X_NOW-X_PREV1)-(X_PREV1-X_PREV2))/2.0,Q,R);
 			Y_NOW = Y.tick(y,(Y_NOW-Y_PREV1) + ((Y_NOW-Y_PREV1)-(Y_PREV1-Y_PREV2))/2.0,Q,R);
-			THETA_NOW = T.tick(theta,(THETA_NOW-THETA_PREV1) + ((THETA_NOW-THETA_PREV1)-(THETA_PREV1-THETA_PREV2))/2.0,Q,R);
+			THETA_NOW = T.tick(theta,(THETA_NOW-THETA_PREV1) + ((THETA_NOW-THETA_PREV1)-(THETA_PREV1-THETA_PREV2))/2.0,Q,R);*/
 		}
 	}
 
