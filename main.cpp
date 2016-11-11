@@ -79,7 +79,8 @@ int main(int argc, char *argv[]){
 	setbuf(stdout, (char *)NULL);
 
 	thread capture_thread(loop_frames,ref(screen_cap));
-	cin.ignore();
+	//cin.ignore();
+	system("sleep 2");
 
 	while(true) {
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
