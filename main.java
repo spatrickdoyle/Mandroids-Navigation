@@ -7,6 +7,8 @@ class Navigation implements Runnable {
 	private String threadName;
 
 	private double X_NOW,Y_NOW,THETA_NOW;
+	private double X_PREV1,Y_PREV1,THETA_PREV1;
+	private double X_PREV2,Y_PREV2,THETA_PREV2;
 
 	Navigation(String name) {
 		threadName = name;
@@ -34,9 +36,19 @@ class Navigation implements Runnable {
 			x = Double.parseDouble(thetaxy[1]);
 			y = Double.parseDouble(thetaxy[2]);
 
-			X_NOW = X.tick(x,0,Q,R);
-			Y_NOW = Y.tick(y,0,Q,R);
-			THETA_NOW = T.tick(theta,0,Q,R);
+			X_NOW += x;
+			Y_NOW += y;
+			THETA_NOW += theta;
+			/*X_PREV2 = X_PREV1;
+			X_PREV1 = X_NOW;
+			Y_PREV2 = Y_PREV1;
+                        Y_PREV1 = Y_NOW;
+			THETA_PREV2 = THETA_PREV1;
+                        THETA_PREV1 = THETA_NOW;
+
+			X_NOW = X.tick(x,(X_NOW-X_PREV1) + ((X_NOW-X_PREV1)-(X_PREV1-X_PREV2))/2.0,Q,R);
+			Y_NOW = Y.tick(y,(Y_NOW-Y_PREV1) + ((Y_NOW-Y_PREV1)-(Y_PREV1-Y_PREV2))/2.0,Q,R);
+			THETA_NOW = T.tick(theta,(THETA_NOW-THETA_PREV1) + ((THETA_NOW-THETA_PREV1)-(THETA_PREV1-THETA_PREV2))/2.0,Q,R);*/
 		}
 	}
 
@@ -52,7 +64,7 @@ class Navigation implements Runnable {
 	}
 
 	public void go(double x, double y, double th, int power) {
-		if (y > Y_NOW) {
+		/*if (y > Y_NOW) {
 			while (Y_NOW < y) {
 				System.out.println(Y_NOW);
 				main.theRobot.runMotor(RXTXRobot.MOTOR1,-power,RXTXRobot.MOTOR2,-power,0);
@@ -69,6 +81,9 @@ class Navigation implements Runnable {
 		else if (th < THETA_NOW) {
 			while (THETA_NOW > th)
 				main.theRobot.runMotor(RXTXRobot.MOTOR1,power,RXTXRobot.MOTOR2,-power,0);
+		}*/
+		while (true) {
+			System.out.println(X_NOW+" "+Y_NOW+" "+THETA_NOW);
 		}
 	}
 }
@@ -91,7 +106,7 @@ public class main {
 		theRobot.sleep(5000);
 
 		//Actually do stuff
-		position.go(0,(36/15.0),0);
+		position.go(0,12,0);
 		//theRobot.sleep(3000);
 		//position.go(0,0,90);
 

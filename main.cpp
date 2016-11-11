@@ -23,16 +23,16 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	int rl = 181;
-	int gl = 176;
+	int rl = 0;
+	int gl = 0;
 	int bl = 81;
 	int rh = 255;
 	int gh = 255;
 	int bh = 255;
 
-	float dpp_h = 0.1;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 64.01 degrees
-	float dpp_v = 0.104;//DEGREES PER PIXEL VERTICALLY. Total angle of view: 49.74 degrees
-	float height = 300.5;//CEILING HEIGHT IN INCHES (314.5 from ground)
+	float dpp_h = 0.069;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 64.01 degrees
+	float dpp_v = 0.071;//DEGREES PER PIXEL VERTICALLY. Total angle of view: 49.74 degrees
+	float height = 300.0;//CEILING HEIGHT IN INCHES (314.5 from ground)
 	//Relative size of blobs to detect
 	int threshold_area_min = 90;
 	int threshold_area_max = 350;
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
 
 	thread capture_thread(loop_frames,ref(screen_cap));
 	//cin.ignore();
-	system("sleep 2");
+	system("sleep 5");
 
 	while(true) {
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
@@ -91,6 +91,8 @@ int main(int argc, char *argv[]){
 
 		prev = points_abs;
 		points = findBiggestBlob(thresholded,threshold_area_min,threshold_area_max);
+		cout << prev[0] << ' ' << prev[1] << ' ' << prev[2] << '\n';
+		cout << points[0] << ' ' << points[1] << ' ' << points[2] << '\n';
 		points_abs.resize(points.size());
 		if (points.size() > 0) {
 			for (i = 0; i < points.size(); i++) {
