@@ -12,6 +12,7 @@ using namespace cv;
 using namespace std;
 
 
+double SafeAcos(double);
 vector<Rect> findBiggestBlob(Mat&,int,int);
 void loop_frames(Mat&);
 
@@ -38,7 +39,7 @@ int main(int argc, char *argv[]){
 	int threshold_area_min = 130;
 	int threshold_area_max = 255;
 	//Relative maximum movement of the blobs each tick
-	int delta = 20;
+	int delta = 50;
 
 	const float PI = 3.1415926535;
 
@@ -103,9 +104,12 @@ int main(int argc, char *argv[]){
 			}
 		}
 
-		/*for (int i = 0; i < points_abs.size(); i++)
+		/*for (int i = 0; i < min(points_abs.size(),prev.size()); i++) {
 			cout << points_abs[i][0] << ' ' << points_abs[i][1] << '\n';
-			cout << '\n';*/
+			//cout << '\n';
+			circle(drawing,Point((int)prev[i][0],(int)prev[i][1]),6,Scalar(0,0,255),-1);
+			circle(drawing,Point((int)points_abs[i][0],(int)points_abs[i][1]),6,Scalar(255,0,0),-1);
+			}*/
 
 		if (points_abs.size() > 0) {
 			X = Eigen::MatrixXf(points_abs.size()*2,4);
@@ -116,8 +120,8 @@ int main(int argc, char *argv[]){
 			for (j = 0; j < prev.size(); j++) {
 				dist = sqrt(pow(points_abs[i][0]-prev[j][0],2) + pow(points_abs[i][1]-prev[j][1],2));
 				//uncomment to calibrate delta
-				//cout << i << ' ' << j << ' ' << dist << '\n';
 				if (dist < delta) {
+					//cout << i << ' ' << j << ' ' << dist << '\n';
 					X(i*2,0) = prev[j][0];
 					X(i*2,1) = -prev[j][1];
 					X(i*2,2) = 1;
@@ -138,9 +142,10 @@ int main(int argc, char *argv[]){
 			theta = ((X.transpose()*X).inverse())*(X.transpose())*Y;
 
 			if ((!isnan(theta[0]))&&(!isnan(theta[1]))) {
-				//cout << acos(theta[0]) << ' ' << asin(theta[1]) << '\n';
-				if (pow((acos(theta[0])+asin(theta[1]))/2.0,2) < 400)
-					TOTAL_THETA = (acos(theta[0])+asin(theta[1]))/2.0;//+= (acos(theta[0])+asin(theta[1]))/2.0;
+				//cout << SafeAcos(theta[0])*57.2958 << ' ' << asin(theta[1])*57.2958 << '\n';
+				//if (pow((acos(theta[0])+asin(theta[1]))/2.0,2) < 400)
+				//	TOTAL_THETA = (acos(theta[0])+asin(theta[1]))/2.0;//+= (acos(theta[0])+asin(theta[1]))/2.0;
+				TOTAL_THETA = SafeAcos(theta[0])*57.2958;
 			}
 			if (!isnan(theta[2]))
 				if (pow(theta[2],2) < 900)
@@ -163,6 +168,12 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
+
+double SafeAcos(double x) {
+	if (x < -1.0) x = -1.0 ;
+	else if (x > 1.0) x = 1.0 ;
+	return acos (x) ;
+}
 
 vector<Rect> findBiggestBlob(Mat &matImage, int threshold_area_min, int threshold_area_max) {
 	Mat img_clone = matImage.clone();
@@ -194,7 +205,7 @@ vector<Rect> findBiggestBlob(Mat &matImage, int threshold_area_min, int threshol
 }
 
 void loop_frames(Mat& img) {
-	VideoCapture camera(0);
+	VideoCapture camera(1);
 	camera.set(CV_CAP_PROP_FRAME_WIDTH,640);//800);
 	camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);//448);
 	camera.read(img);
