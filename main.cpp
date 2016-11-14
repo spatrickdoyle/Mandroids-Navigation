@@ -76,6 +76,7 @@ int main(int argc, char *argv[]){
 	//drawing.setTo(Scalar(0,0,0));
 
 	float TOTAL_THETA = 0;
+	float TOTAL_THETA2 = 0;
 	float TOTAL_X = 0;
 	float TOTAL_Y = 0;
 	setbuf(stdout, (char *)NULL);
@@ -141,20 +142,42 @@ int main(int argc, char *argv[]){
 		if (points_abs.size() > 1) {
 			theta = ((X.transpose()*X).inverse())*(X.transpose())*Y;
 
-			if ((!isnan(theta[0]))&&(!isnan(theta[1]))) {
-				//cout << SafeAcos(theta[0])*57.2958 << ' ' << asin(theta[1])*57.2958 << '\n';
-				//if (pow((acos(theta[0])+asin(theta[1]))/2.0,2) < 400)
-				//	TOTAL_THETA = (acos(theta[0])+asin(theta[1]))/2.0;//+= (acos(theta[0])+asin(theta[1]))/2.0;
+			if (!isnan(theta[0])) {
 				TOTAL_THETA = SafeAcos(theta[0])*57.2958;
 			}
-			if (!isnan(theta[2]))
+			else {
+				TOTAL_THETA = 0;
+			}
+			if (!isnan(theta[1])) {
+                                TOTAL_THETA2 = asin(theta[1])*57.2958;
+                                if (isnan(TOTAL_THETA2))
+                                        TOTAL_THETA2 = 0;
+                        }
+                        else {
+                                TOTAL_THETA2 = 0;
+                        }
+
+
+			if (!isnan(theta[2])) {
 				if (pow(theta[2],2) < 900)
 					TOTAL_X = theta[2];//+= theta[2];
-			if (!isnan(theta[3]))
+				else
+					TOTAL_X = 0;
+			}
+			else {
+				TOTAL_X = 0;
+			}
+			if (!isnan(theta[3])) {
 				if (pow(theta[3],2) < 900)
 					TOTAL_Y = theta[3];//+= theta[3];
+				else
+					TOTAL_Y = 0;
+			}
+			else {
+				TOTAL_Y = 0;
+			}
 
-			printf("%f %f %f\n",TOTAL_THETA,TOTAL_X,-TOTAL_Y);
+			printf("%f %f %f %f\n",TOTAL_THETA,TOTAL_X,-TOTAL_Y,TOTAL_THETA2);
 		}
 
 		if (argc == 2) {
@@ -205,7 +228,7 @@ vector<Rect> findBiggestBlob(Mat &matImage, int threshold_area_min, int threshol
 }
 
 void loop_frames(Mat& img) {
-	VideoCapture camera(1);
+	VideoCapture camera(0);
 	camera.set(CV_CAP_PROP_FRAME_WIDTH,640);//800);
 	camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);//448);
 	camera.read(img);

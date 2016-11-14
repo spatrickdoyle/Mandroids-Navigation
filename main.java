@@ -6,7 +6,7 @@ class Navigation implements Runnable {
 	private Thread t;
 	private String threadName;
 
-	private double X_NOW,Y_NOW,THETA_NOW;
+	private double X_NOW,Y_NOW,THETA_NOW,THETA_NOW2;
 	private double X_PREV1,Y_PREV1,THETA_PREV1;
 	private double X_PREV2,Y_PREV2,THETA_PREV2;
 
@@ -17,7 +17,7 @@ class Navigation implements Runnable {
 	public void run() {
 		String line;
 		String[] thetaxy;
-		double theta,x,y;
+		double theta,x,y,theta2;
 
 		//Kalman X = new Kalman();
 		//Kalman Y = new Kalman();
@@ -35,10 +35,14 @@ class Navigation implements Runnable {
 			theta = Double.parseDouble(thetaxy[0]);
 			x = Double.parseDouble(thetaxy[1]);
 			y = Double.parseDouble(thetaxy[2]);
+			theta2 = Double.parseDouble(thetaxy[3]);
 
 			X_NOW += x;
 			Y_NOW += y;
-			THETA_NOW += theta;
+			if ((Math.pow(theta,2) < 400)&&(Math.pow(theta2,2) < 400)) {
+				THETA_NOW += theta;
+				THETA_NOW2 += theta2;
+			}
 			/*X_PREV2 = X_PREV1;
 			X_PREV1 = X_NOW;
 			Y_PREV2 = Y_PREV1;
@@ -70,33 +74,38 @@ class Navigation implements Runnable {
 				System.out.println(Y_NOW);
 				main.theRobot.runMotor(RXTXRobot.MOTOR1,power,RXTXRobot.MOTOR2,power,0);
 			}
+			System.out.println(Y_NOW);
 		}
 		else if (y > Y_NOW) {
 			while (Y_NOW < y) {
 				System.out.println(Y_NOW);
 				main.theRobot.runMotor(RXTXRobot.MOTOR1,-power,RXTXRobot.MOTOR2,-power,0);
 			}
+			System.out.println(Y_NOW);
 		}
 
 		main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
 	}
 
-	public void turn(double y, int power) {
-		//Y_NOW = 0;
+	public void turn(double t, int power) {
+		THETA_NOW = 0;
+		THETA_NOW2 = 0;
 		//main.theRobot.runMotor(RXTXRobot.MOTOR1,power,RXTXRobot.MOTOR2,-power,(int)(t*1000));
-		//System.out.println(X_NOW+" "+Y_NOW+" "+THETA_NOW);
-		Y_NOW = 0;
-                if (y < Y_NOW) {
-                        while (Y_NOW > y) {
-                                System.out.println(Y_NOW);
+		//System.out.println(THETA_NOW+" "+THETA_NOW2);
+
+                if (t > 0) {
+                        while (THETA_NOW-THETA_NOW2 < t) {
+                                System.out.println(THETA_NOW+" "+THETA_NOW2+" "+(THETA_NOW-THETA_NOW2));
                                 main.theRobot.runMotor(RXTXRobot.MOTOR1,power,RXTXRobot.MOTOR2,-power,0);
                         }
+			System.out.println(THETA_NOW+" "+THETA_NOW2+" "+(THETA_NOW-THETA_NOW2));
                 }
-                else if (y > Y_NOW) {
-                        while (Y_NOW < y) {
-                                System.out.println(Y_NOW);
+                else if (t < 0) {
+			while (THETA_NOW+THETA_NOW2 < -t) {
+                                System.out.println(THETA_NOW+" "+THETA_NOW2+" "+(THETA_NOW+THETA_NOW2));
                                 main.theRobot.runMotor(RXTXRobot.MOTOR1,-power,RXTXRobot.MOTOR2,power,0);
                         }
+                        System.out.println(THETA_NOW+" "+THETA_NOW2+" "+(THETA_NOW-THETA_NOW2));
                 }
 
                 main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
@@ -121,8 +130,9 @@ public class main {
 		theRobot.sleep(7000);
 
 		//Actually do stuff
-		//position.go(60,100);
-		position.turn(-24,200);
+		position.go(60,100);
+		theRobot.sleep(1000);
+		position.turn(100,200);
 
 		//Close connection
 		theRobot.close();
