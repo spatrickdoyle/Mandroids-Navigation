@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
 
 	float dpp_h = 0.069;//DEGREES PER PIXEL HORIZONTALLY. Total angle of view: 44 degrees
 	float dpp_v = 0.071;//DEGREES PER PIXEL VERTICALLY. Total angle of view: 34 degrees
-	float height = 300.0;//CEILING HEIGHT IN INCHES (314.5 from ground)
+	float height = 299.625;//CEILING HEIGHT IN INCHES (314.5 from ground)
 	float camera_angle = 22;//ANGLE THE CAMERA LINE OF SIGHT MAKES WITH THE VERTICAL in degrees
 	//Relative size of blobs to detect
 	int threshold_area_min = 130;
@@ -149,9 +149,7 @@ int main(int argc, char *argv[]){
 				TOTAL_THETA = 0;
 			}
 			if (!isnan(theta[1])) {
-                                TOTAL_THETA2 = asin(theta[1])*57.2958;
-                                if (isnan(TOTAL_THETA2))
-                                        TOTAL_THETA2 = 0;
+                                TOTAL_THETA2 = SafeAsin(theta[1])*57.2958;
                         }
                         else {
                                 TOTAL_THETA2 = 0;
@@ -160,22 +158,22 @@ int main(int argc, char *argv[]){
 
 			if (!isnan(theta[2])) {
 				if (pow(theta[2],2) < 900)
-					TOTAL_X = theta[2];//+= theta[2];
-				else
-					TOTAL_X = 0;
+					TOTAL_X = theta[2];
+				//else
+				//	TOTAL_X = 0;
 			}
-			else {
+			/*else {
 				TOTAL_X = 0;
-			}
+			}*/
 			if (!isnan(theta[3])) {
 				if (pow(theta[3],2) < 900)
-					TOTAL_Y = theta[3];//+= theta[3];
-				else
-					TOTAL_Y = 0;
+					TOTAL_Y = theta[3];
+				//else
+				//	TOTAL_Y = 0;
 			}
-			else {
+			/*else {
 				TOTAL_Y = 0;
-			}
+			}*/
 
 			printf("%f %f %f %f\n",TOTAL_THETA,TOTAL_X,-TOTAL_Y,TOTAL_THETA2);
 		}
@@ -195,8 +193,15 @@ int main(int argc, char *argv[]){
 double SafeAcos(double x) {
 	if (x < -1.0) x = -1.0 ;
 	else if (x > 1.0) x = 1.0 ;
-	return acos (x) ;
+	return acos(x) ;
 }
+
+double SafeAsin(double x) {
+        if (x < -1.0) x = -1.0 ;
+        else if (x > 1.0) x = 1.0 ;
+        return asin(x) ;
+}
+
 
 vector<Rect> findBiggestBlob(Mat &matImage, int threshold_area_min, int threshold_area_max) {
 	Mat img_clone = matImage.clone();
