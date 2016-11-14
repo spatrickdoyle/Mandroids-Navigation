@@ -81,7 +81,7 @@ int main(int argc, char *argv[]){
 
 	thread capture_thread(loop_frames,ref(screen_cap));
 	//cin.ignore();
-	system("sleep 5");
+	system("sleep 10");
 
 	while(true) {
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
@@ -137,9 +137,11 @@ int main(int argc, char *argv[]){
 		if (points_abs.size() > 1) {
 			theta = ((X.transpose()*X).inverse())*(X.transpose())*Y;
 
-			if ((!isnan(theta[0]))&&(!isnan(theta[1])))
+			if ((!isnan(theta[0]))&&(!isnan(theta[1]))) {
+				//cout << acos(theta[0]) << ' ' << asin(theta[1]) << '\n';
 				if (pow((acos(theta[0])+asin(theta[1]))/2.0,2) < 400)
 					TOTAL_THETA = (acos(theta[0])+asin(theta[1]))/2.0;//+= (acos(theta[0])+asin(theta[1]))/2.0;
+			}
 			if (!isnan(theta[2]))
 				if (pow(theta[2],2) < 900)
 					TOTAL_X = theta[2];//+= theta[2];
@@ -147,7 +149,7 @@ int main(int argc, char *argv[]){
 				if (pow(theta[3],2) < 900)
 					TOTAL_Y = theta[3];//+= theta[3];
 
-			printf("%f %f %f\n",TOTAL_THETA,TOTAL_X,TOTAL_Y);
+			printf("%f %f %f\n",TOTAL_THETA,TOTAL_X,-TOTAL_Y);
 		}
 
 		if (argc == 2) {
@@ -192,7 +194,7 @@ vector<Rect> findBiggestBlob(Mat &matImage, int threshold_area_min, int threshol
 }
 
 void loop_frames(Mat& img) {
-	VideoCapture camera(1);
+	VideoCapture camera(0);
 	camera.set(CV_CAP_PROP_FRAME_WIDTH,640);//800);
 	camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);//448);
 	camera.read(img);

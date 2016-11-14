@@ -19,9 +19,9 @@ class Navigation implements Runnable {
 		String[] thetaxy;
 		double theta,x,y;
 
-		Kalman X = new Kalman();
-		Kalman Y = new Kalman();
-		Kalman T = new Kalman();
+		//Kalman X = new Kalman();
+		//Kalman Y = new Kalman();
+		//Kalman T = new Kalman();
 
 		double Q = 0.0001;
 		double R = 0.001043;
@@ -42,9 +42,9 @@ class Navigation implements Runnable {
 			/*X_PREV2 = X_PREV1;
 			X_PREV1 = X_NOW;
 			Y_PREV2 = Y_PREV1;
-            Y_PREV1 = Y_NOW;
+            		Y_PREV1 = Y_NOW;
 			THETA_PREV2 = THETA_PREV1;
-            THETA_PREV1 = THETA_NOW;
+            		THETA_PREV1 = THETA_NOW;
 
 			X_NOW = X.tick(x,(X_NOW-X_PREV1) + ((X_NOW-X_PREV1)-(X_PREV1-X_PREV2))/2.0,Q,R);
 			Y_NOW = Y.tick(y,(Y_NOW-Y_PREV1) + ((Y_NOW-Y_PREV1)-(Y_PREV1-Y_PREV2))/2.0,Q,R);
@@ -59,32 +59,47 @@ class Navigation implements Runnable {
 		}
 	}
 
-	public void go(double x, double y, double th) {
-		go(x,y,th,200);
+	public void go(double y) {
+		go(y,200);
 	}
 
-	public void go(double x, double y, double th, int power) {
-		if (y > Y_NOW) {
+	public void go(double y, int power) {
+		Y_NOW = 0;
+		if (y < Y_NOW) {
+			while (Y_NOW > y) {
+				System.out.println(Y_NOW);
+				main.theRobot.runMotor(RXTXRobot.MOTOR1,power,RXTXRobot.MOTOR2,power,0);
+			}
+		}
+		else if (y > Y_NOW) {
 			while (Y_NOW < y) {
 				System.out.println(Y_NOW);
 				main.theRobot.runMotor(RXTXRobot.MOTOR1,-power,RXTXRobot.MOTOR2,-power,0);
 			}
 		}
-		else if (y < Y_NOW) {
-			while (Y_NOW > y)
-				main.theRobot.runMotor(RXTXRobot.MOTOR1,power,RXTXRobot.MOTOR2,power,0);
-		}
-		else if (th > THETA_NOW) {
-			while (THETA_NOW < th)
-				main.theRobot.runMotor(RXTXRobot.MOTOR1,-power,RXTXRobot.MOTOR2,power,0);
-		}
-		else if (th < THETA_NOW) {
-			while (THETA_NOW > th)
-				main.theRobot.runMotor(RXTXRobot.MOTOR1,power,RXTXRobot.MOTOR2,-power,0);
-		}
-		/*while (true) {
-			System.out.println(X_NOW+" "+Y_NOW+" "+THETA_NOW);
-		}*/
+
+		main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+	}
+
+	public void turn(double y, int power) {
+		//Y_NOW = 0;
+		//main.theRobot.runMotor(RXTXRobot.MOTOR1,power,RXTXRobot.MOTOR2,-power,(int)(t*1000));
+		//System.out.println(X_NOW+" "+Y_NOW+" "+THETA_NOW);
+		Y_NOW = 0;
+                if (y < Y_NOW) {
+                        while (Y_NOW > y) {
+                                System.out.println(Y_NOW);
+                                main.theRobot.runMotor(RXTXRobot.MOTOR1,power,RXTXRobot.MOTOR2,-power,0);
+                        }
+                }
+                else if (y > Y_NOW) {
+                        while (Y_NOW < y) {
+                                System.out.println(Y_NOW);
+                                main.theRobot.runMotor(RXTXRobot.MOTOR1,-power,RXTXRobot.MOTOR2,power,0);
+                        }
+                }
+
+                main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
 	}
 }
 
@@ -103,12 +118,11 @@ public class main {
 		//Initialize navigation thread
 		Navigation position = new Navigation("Position");
 		position.start();
-		theRobot.sleep(5000);
+		theRobot.sleep(7000);
 
 		//Actually do stuff
-		position.go(0,36,0);
-		//theRobot.sleep(3000);
-		//position.go(0,0,90);
+		//position.go(60,100);
+		position.turn(-24,200);
 
 		//Close connection
 		theRobot.close();
