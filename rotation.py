@@ -57,57 +57,57 @@ print "dy: "+str(theta.tolist()[3][0])'''
 import regression
 
 def kalman():
-        data_file = open("data1.txt","r")
-        lines = data_file.read().split('\n')
-        data_file.close()
-        print lines[0]
-        lines = lines[1:-1]
-
-        measurement = 2
-
+        plt.ion()
+        measurement = 3
         data = []
         total = [0.0]
+        X = [0.0,0.0,0.0,0.0]
+        P = [0.0]
 
-        for line in range(len(lines)):
-	        data.append(float(lines[line].split()[measurement]))
-	        total.append(total[-1]+data[-1])
-
-                variance = sum([(i - sum(data)/len(data))**2 for i in data])/len(data)
-
-                X = [0.0,0.0,0.0,0.0]
-                P = [0.0]
-
-        #Q = ~0.0001 seems to work pretty well
-        Q = 0.0001#process variance
-        R = 0.00104272358489#measurement variance
+        Q = 0.001#process variance
+        R = 0.5#measurement variance
 
         P_ = 0.0
         K = 0.0
         X_ = 0.0
+        while True:
+                try:
+                        ln = raw_input()
+                        line = ln.split()
+                        #print ln
+                except EOFError:
+                        break
+                if len(line) < 3:
+                        target = [float(line[0])]
+                        print line[0]
+                else:
+                        data.append(float(line[measurement]))
+                        total.append(total[-1]+data[-1])
 
-        for point in range(len(data)):
-	        X_ = X[-1] + (X[-1]-X[-2]) + (1.0/2.0)*((X[-1]-X[-2])-(X[-2]-X[-3]))
-	        P_ = P[-1] + Q
+                        #variance = sum([(i - sum(data)/len(data))**2 for i in data])/len(data)
+                        #R = variance
 
-	        K = P_/(P_+R)
-	        X.append(X_ + K*(data[point] - (X[-1]-X[-2])))
-	        P.append((1-K)*P_)
+                        target = [target[0]]*len(data)
 
-        print X[-1]
+                        X_ = X[-1] + (X[-1]-X[-2]) + (1.0/2.0)*((X[-1]-X[-2])-(X[-2]-X[-3]))
+                        P_ = P[-1] + Q
 
-        X = X[4:]
-        P = P[1:]
-        total = total[1:]
+                        K = P_/(P_+R)
+                        X.append(X_ + K*(data[-1] - (X[-1]-X[-2])))
+                        P.append((1-K)*P_)
 
-        #reg = regression.calc_exact(len(data)-1,range(len(data)),data)
-        #reg = [reg[i]*i for i in range(len(reg))][1:]
-        #data_reg = [(np.asarray([i**j for j in range(len(reg))])*reg).tolist()[0][0] for i in range(len(data))]
+                        #print data
+                        #print total
+                        #print X
+                        #print target
+                        plt.plot(range(len(data)),data,'b-')
+                        plt.plot(range(len(data)),total[1:],'g-')
+                        plt.plot(range(len(data)),X[4:],'r-')
+                        plt.plot(range(len(data)),target,'k-')
 
-        plt.plot(range(len(data)),data,'b-')
-        plt.plot(range(len(data)),total,'g-')
-        plt.plot(range(len(data)),X,'r-')
-
-        plt.show()
+                        #plt.pause(0.00005)
+        while True:
+                plt.pause(0.05)
 
 def encoders():
         colors = ['r','g','b','c','m','y','k']
@@ -157,4 +157,4 @@ def encoders():
 
         plt.show()
 
-encoders()
+kalman()

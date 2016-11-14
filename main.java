@@ -20,7 +20,7 @@ class Navigation implements Runnable {
 		double theta,x,y,theta2;
 
 		//Kalman X = new Kalman();
-		//Kalman Y = new Kalman();
+		Kalman Y = new Kalman();
 		//Kalman T = new Kalman();
 
 		double Q = 0.0001;
@@ -38,7 +38,7 @@ class Navigation implements Runnable {
 			theta2 = Double.parseDouble(thetaxy[3]);
 
 			X_NOW += x;
-			Y_NOW += y;
+			//Y_NOW += y;
 			if ((Math.pow(theta,2) < 400)&&(Math.pow(theta2,2) < 400)) {
 				THETA_NOW += theta;
 				THETA_NOW2 += theta2;
@@ -50,15 +50,15 @@ class Navigation implements Runnable {
 
 			System.out.println(theta+" "+theta2+" "+x+" "+y);
 			/*X_PREV2 = X_PREV1;
-			X_PREV1 = X_NOW;
+			  X_PREV1 = X_NOW;*/
 			Y_PREV2 = Y_PREV1;
-            		Y_PREV1 = Y_NOW;
-			THETA_PREV2 = THETA_PREV1;
-            		THETA_PREV1 = THETA_NOW;
+            Y_PREV1 = Y_NOW;
+			/*THETA_PREV2 = THETA_PREV1;
+			  THETA_PREV1 = THETA_NOW;*/
 
-			X_NOW = X.tick(x,(X_NOW-X_PREV1) + ((X_NOW-X_PREV1)-(X_PREV1-X_PREV2))/2.0,Q,R);
+			//X_NOW = X.tick(x,(X_NOW-X_PREV1) + ((X_NOW-X_PREV1)-(X_PREV1-X_PREV2))/2.0,Q,R);
 			Y_NOW = Y.tick(y,(Y_NOW-Y_PREV1) + ((Y_NOW-Y_PREV1)-(Y_PREV1-Y_PREV2))/2.0,Q,R);
-			THETA_NOW = T.tick(theta,(THETA_NOW-THETA_PREV1) + ((THETA_NOW-THETA_PREV1)-(THETA_PREV1-THETA_PREV2))/2.0,Q,R);*/
+			//THETA_NOW = T.tick(theta,(THETA_NOW-THETA_PREV1) + ((THETA_NOW-THETA_PREV1)-(THETA_PREV1-THETA_PREV2))/2.0,Q,R);
 		}
 	}
 

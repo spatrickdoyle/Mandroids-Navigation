@@ -1,15 +1,4 @@
-   RXTXRobot API version 4.5.5
----------------------------------
-
-Connecting to robot, please wait...
-
---> Most recent version from website: 4.5.5
---> You are on the most up-to-date version of the API! (version 4.5.5)
-Connected!
-
-
-Firmware version: 4.5.2
-API version: 4.5.5
+55 c
 0.0 0.0 0.0 -0.0
 0.0 -1.0E-5 0.0 8.8E-5
 0.0 -1.0E-5 0.0 8.8E-5
@@ -79,16 +68,12 @@ API version: 4.5.5
 0.0 -5.538989 -2.135223 3.098358
 0.0 0.0 -2.135223 3.098358
 0.0 -2.610576 -3.042603 0.793755
-
-Closing robot connection...
-Resetting servos and motors...
 0.0 -3.393166 -3.826569 2.268959
 0.039565 7.0E-6 6.1E-5 -3.43E-4
 0.0 -0.290045 -1.098328 -0.260841
 2.459096 0.289526 1.098694 0.254906
 0.039565 7.0E-6 6.1E-5 -3.43E-4
 0.039565 7.0E-6 6.1E-5 -3.43E-4
-Connection closed!
 0.039565 7.0E-6 6.1E-5 -3.43E-4
 0.039565 7.0E-6 6.1E-5 -3.43E-4
 0.039565 7.0E-6 6.1E-5 -3.43E-4
@@ -142,5 +127,3 @@ Connection closed!
 0.039565 7.0E-6 6.1E-5 -3.43E-4
 0.039565 7.0E-6 6.1E-5 -3.43E-4
 0.039565 7.0E-6 6.1E-5 -3.43E-4
-
-55 c
