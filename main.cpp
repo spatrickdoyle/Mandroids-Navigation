@@ -13,6 +13,7 @@ using namespace std;
 
 
 double SafeAcos(double);
+double SafeAsin(double);
 vector<Rect> findBiggestBlob(Mat&,int,int);
 void loop_frames(Mat&);
 
@@ -144,12 +145,16 @@ int main(int argc, char *argv[]){
 
 			if (!isnan(theta[0])) {
 				TOTAL_THETA = SafeAcos(theta[0])*57.2958;
+				if (isnan(TOTAL_THETA))
+					TOTAL_THETA = 0;
 			}
 			else {
 				TOTAL_THETA = 0;
 			}
 			if (!isnan(theta[1])) {
                                 TOTAL_THETA2 = SafeAsin(theta[1])*57.2958;
+				if (isnan(TOTAL_THETA2))
+					TOTAL_THETA2 = 0;
                         }
                         else {
                                 TOTAL_THETA2 = 0;
