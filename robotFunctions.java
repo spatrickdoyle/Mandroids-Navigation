@@ -40,11 +40,11 @@ public class robotFunctions {
 
 	public static double Sonar(RXTXRobot r) {
         //Read the ping sensor value, which is connected to pin 7
-        System.out.println("Response Ping: " + r.getPing(7) + " cm");
+        //System.out.println("Response Ping: " + r.getPing(7) + " cm");
         //This makes the ping sensor not a piece of shit and returns an accurate value
         double actual = (r.getPing(7)*.671)+1.339;
-        System.out.println("Actual value: " + actual + " cm");
-	return actual;
+        //System.out.println("Actual value: " + actual + " cm");
+		return actual;
 	}
 
 	public static void TempTester(RXTXRobot r) {

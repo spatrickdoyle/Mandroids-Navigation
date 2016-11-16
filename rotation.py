@@ -58,14 +58,15 @@ import regression
 
 def kalman():
         plt.ion()
-        measurement = 3
+        measurement = 0
         data = []
         total = [0.0]
         X = [0.0,0.0,0.0,0.0]
         P = [0.0]
+        java = []
 
         Q = 0.001#process variance
-        R = 0.5#measurement variance
+        R = 0.001#measurement variance
 
         P_ = 0.0
         K = 0.0
@@ -73,21 +74,30 @@ def kalman():
         while True:
                 try:
                         ln = raw_input()
+                        if ln == "BREAK":
+                                break
+                        print ln
                         line = ln.split()
+                        if line == []:
+                                continue
                         #print ln
                 except EOFError:
                         break
-                if len(line) < 3:
-                        target = [float(line[0])]
-                        print line[0]
-                else:
-                        data.append(float(line[measurement]))
-                        total.append(total[-1]+data[-1])
+                try:
+                        float(line[0])
+                except ValueError:
+                        continue
+                '''if len(line) < 3:
+                        #target = [float(line[0])]
+                        print line[0]'''
+                if len(line) == 1:
+                        data.append(float(line[measurement])-total[-1])
+                        total.append(sum(data))
 
                         #variance = sum([(i - sum(data)/len(data))**2 for i in data])/len(data)
                         #R = variance
 
-                        target = [target[0]]*len(data)
+                        #target = [target[0]]*len(data)
 
                         X_ = X[-1] + (X[-1]-X[-2]) + (1.0/2.0)*((X[-1]-X[-2])-(X[-2]-X[-3]))
                         P_ = P[-1] + Q
@@ -96,6 +106,10 @@ def kalman():
                         X.append(X_ + K*(data[-1] - (X[-1]-X[-2])))
                         P.append((1-K)*P_)
 
+                        j = raw_input()
+                        print j
+                        java.append(float(j))
+
                         #print data
                         #print total
                         #print X
@@ -103,9 +117,10 @@ def kalman():
                         plt.plot(range(len(data)),data,'b-')
                         plt.plot(range(len(data)),total[1:],'g-')
                         plt.plot(range(len(data)),X[4:],'r-')
-                        plt.plot(range(len(data)),target,'k-')
+                        #plt.plot(range(len(data)-1),target,'k-')
+                        plt.plot(range(len(data)),java,'m-')
 
-                        #plt.pause(0.00005)
+                        plt.pause(0.00001)
         while True:
                 plt.pause(0.05)
 

@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
 	float camera_angle = 22;//ANGLE THE CAMERA LINE OF SIGHT MAKES WITH THE VERTICAL in degrees
 	//Relative size of blobs to detect
 	int threshold_area_min = 130;
-	int threshold_area_max = 255;
+	int threshold_area_max = 450;
 	//Relative maximum movement of the blobs each tick
 	int delta = 50;
 
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]){
 			createTrackbar("bl","ctrl",&bl,255);
 			createTrackbar("bh","ctrl",&bh,255);
 			createTrackbar("size_min","ctrl",&threshold_area_min,255);
-			createTrackbar("size_max","ctrl",&threshold_area_max,255);
+			createTrackbar("size_max","ctrl",&threshold_area_max,1000);
 		}
 	}
 
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]){
 
 	thread capture_thread(loop_frames,ref(screen_cap));
 	//cin.ignore();
-	system("sleep 10");
+	system("sleep 5");
 
 	while(true) {
 		inRange(screen_cap,Scalar(bl,gl,rl),Scalar(bh,gh,rh),thresholded);
@@ -238,7 +238,7 @@ vector<Rect> findBiggestBlob(Mat &matImage, int threshold_area_min, int threshol
 }
 
 void loop_frames(Mat& img) {
-	VideoCapture camera(0);
+	VideoCapture camera(1);
 	camera.set(CV_CAP_PROP_FRAME_WIDTH,640);//800);
 	camera.set(CV_CAP_PROP_FRAME_HEIGHT,480);//448);
 	camera.read(img);
