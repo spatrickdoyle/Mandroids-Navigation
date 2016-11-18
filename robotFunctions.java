@@ -42,13 +42,18 @@ public class robotFunctions {
         //Read the ping sensor value, which is connected to pin 7
         //System.out.println("Response Ping: " + r.getPing(7) + " cm");
         //This makes the ping sensor not a piece of shit and returns an accurate value
-        double actual = (r.getPing(7)*.671)+1.339;
+        double actual = (r.getPing(7)*1.009)+0.942;
         //System.out.println("Actual value: " + actual + " cm");
 		return actual;
 	}
 
 	public static double Sonar2(RXTXRobot r) {
-		double actual = (r.getPing(11)*1.006488165)-1.327145923;
+		double actual = (r.getPing(11)*1.006488165)+1;
+		return actual;
+	}
+
+	public static double Sonar3(RXTXRobot r) {
+		double actual = (r.getPing(9)*0.978)+0.317;
 		return actual;
 	}
 

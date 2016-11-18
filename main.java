@@ -106,7 +106,7 @@ class Navigation implements Runnable {
 		T2.reset();
 
 		if (t > 0) {
-			while (THETA2_NOW > -t) {
+			while (THETA_NOW-THETA2_NOW < t) {
 				THETA_PREV = THETA_NOW;
 				THETA2_PREV = THETA2_NOW;
 
@@ -139,97 +139,63 @@ class Navigation implements Runnable {
 	}
 
 	public void reliableCCTurn(double y) {
-		//main.theRobot.runMotor(RXTXRobot.MOTOR1,-180,RXTXRobot.MOTOR2,115,2250);
-		turn(-90);
-		main.theRobot.sleep(500);
-
+		double newBaseline;
 		double baseline = robotFunctions.Sonar2(main.theRobot);
+		baseline = robotFunctions.Sonar2(main.theRobot);
 		main.theRobot.sleep(500);
-		double newBaseline = baseline=1;
-
-		int leftPower = -100;
-		int rightPower = -100;
 
 		Y_NOW = 0;
 		Y_SENT = 0;
 		Y.reset();
 
 		while (Y_NOW < y) {
-			newBaseline = robotFunctions.Sonar2(main.theRobot);
-			//for when it drifts to the left
-			while (baseline > newBaseline) {
-				Y_PREV = Y_NOW;
-				Y_NOW = Y.tick(Y_SENT-Y_PREV,Q,R);
-				System.out.println(Y_NOW);
-				newBaseline = robotFunctions.Sonar2(main.theRobot);
-				//need to power the left motor now since it is drifting to the left
-				main.theRobot.runMotor(RXTXRobot.MOTOR1, leftPower = leftPower - 150, RXTXRobot.MOTOR2, -100, 0);
-				leftPower = -100;
-				if (Y_NOW > y)
-					break;
-			}
-			//for when it drifts to the right
-			while (baseline < newBaseline) {
-				Y_PREV = Y_NOW;
+			Y_PREV = Y_NOW;
 			Y_NOW = Y.tick(Y_SENT-Y_PREV,Q,R);
-			System.out.println(Y_NOW);
-				newBaseline = robotFunctions.Sonar2(main.theRobot);
-				//need to power the left motor now since it is drifting to the left
-				main.theRobot.runMotor(RXTXRobot.MOTOR1, leftPower, RXTXRobot.MOTOR2, rightPower = rightPower - 150, 0);
-				rightPower = -100;
+			main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -100, 0);
+			newBaseline = robotFunctions.Sonar2(main.theRobot);
+			if (newBaseline < baseline-1) {
+				main.theRobot.runMotor(RXTXRobot.MOTOR1, -400, RXTXRobot.MOTOR2, -100, 0);
 				if (Y_NOW > y)
 					break;
 			}
-			leftPower = -100;
-			rightPower = -100;
+			main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -100, 0);
+			newBaseline = robotFunctions.Sonar2(main.theRobot);
+			if (newBaseline > baseline+1) {
+				main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -400, 0);
+				if (Y_NOW > y)
+					break;
+			}
 		}
 		main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
 	}
 
 	public void reliableCWTurn(double y) {
-		//main.theRobot.runMotor(RXTXRobot.MOTOR1,170,RXTXRobot.MOTOR2,-200,6500);
-		turn(90);
+		double newBaseline;
+		double baseline = robotFunctions.Sonar3(main.theRobot);
+		baseline = robotFunctions.Sonar3(main.theRobot);
 		main.theRobot.sleep(500);
-
-		double baseline = robotFunctions.Sonar2(main.theRobot);
-		main.theRobot.sleep(500);
-		double newBaseline = baseline=1;
-
-		int leftPower = -100;
-		int rightPower = -100;
 
 		Y_NOW = 0;
 		Y_SENT = 0;
 		Y.reset();
 
 		while (Y_NOW < y) {
-			newBaseline = robotFunctions.Sonar2(main.theRobot);
-			//for when it drifts to the left
-			while (baseline > newBaseline) {
-				Y_PREV = Y_NOW;
-				Y_NOW = Y.tick(Y_SENT-Y_PREV,Q,R);
-				System.out.println(Y_NOW);
-				newBaseline = robotFunctions.Sonar2(main.theRobot);
-				//need to power the left motor now since it is drifting to the left
-				main.theRobot.runMotor(RXTXRobot.MOTOR1, leftPower = leftPower - 250, RXTXRobot.MOTOR2, -100, 0);
-				leftPower = -100;
+			Y_PREV = Y_NOW;
+			Y_NOW = Y.tick(Y_SENT-Y_PREV,Q,R);
+			main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -100, 0);
+			newBaseline = robotFunctions.Sonar3(main.theRobot);
+			if (newBaseline < baseline-1) {
+				main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -250, 0);
 				if (Y_NOW > y)
 					break;
 			}
-			//for when it drifts to the right
-			while (baseline < newBaseline) {
-				Y_PREV = Y_NOW;
-				Y_NOW = Y.tick(Y_SENT-Y_PREV,Q,R);
-				System.out.println(Y_NOW);
-				newBaseline = robotFunctions.Sonar2(main.theRobot);
-				//need to power the left motor now since it is drifting to the left
-				main.theRobot.runMotor(RXTXRobot.MOTOR1, leftPower, RXTXRobot.MOTOR2, rightPower = rightPower - 250, 0);
-				rightPower = -100;
+			main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -100, 0);
+			newBaseline = robotFunctions.Sonar3(main.theRobot);
+			if (newBaseline > baseline+1) {
+				main.theRobot.runMotor(RXTXRobot.MOTOR1, -250, RXTXRobot.MOTOR2, -100, 0);
 				if (Y_NOW > y)
 					break;
 			}
-			leftPower = -100;
-			rightPower = -100;
 		}
 		main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
 	}
@@ -239,7 +205,7 @@ class Navigation implements Runnable {
 public class main {
 	public static RXTXRobot theRobot;
 
-	private static int side = 1;
+	private static int side = 0;
 
 	private static double X_NOW,Y_NOW,THETA_NOW;
 
@@ -254,11 +220,18 @@ public class main {
 		position.start();
 
 		//Actually do stuff
+		//position.turn(-90);
+		//position.go(36);
+		//System.out.println(robotFunctions.Sonar(theRobot));
+		//System.out.println(robotFunctions.Sonar2(theRobot));
+		//System.out.println(robotFunctions.Sonar3(theRobot));
+		//theRobot.runMotor(RXTXRobot.MOTOR1,100,0);
 
 		//Move out of the box
-		theRobot.runMotor(RXTXRobot.MOTOR1,-180,RXTXRobot.MOTOR2,-180,1000);
+		theRobot.runMotor(RXTXRobot.MOTOR1,-180,RXTXRobot.MOTOR2,-180,500);
 		theRobot.sleep(1000);
 		moveOutOfBox();
+		theRobot.sleep(2000);
 
 		//Turn 90 degrees left or right and move to the ramp
 		firstTurn();
@@ -271,9 +244,11 @@ public class main {
 
 		//Turn
 		turnOnPlatform();
+		theRobot.sleep(500);
 
 		//Move off of the platform
 		getOffThePlatform();
+		//theRobot.sleep(1000);
 
 		//Get the ball
 		secondTurn();
@@ -282,7 +257,7 @@ public class main {
 		//Back up
 		position.go(-20);
 		//Turn
-		secondTurnAlt();
+		/*secondTurnAlt();
 		position.go(60);
 
 		//Approach the wall
@@ -302,7 +277,7 @@ public class main {
 		robotFunctions.moveArm(theRobot);
 		double perc = robotFunctions.Conduct(theRobot);
 		if (perc > 80)
-		robotFunctions.dropBall(theRobot);
+		robotFunctions.dropBall(theRobot);*/
 
 		//Close connection
 		theRobot.close();
@@ -311,19 +286,26 @@ public class main {
 
 	public static void moveOutOfBox() {
 		double frontActual = robotFunctions.Sonar(theRobot);
-		while (frontActual > 40) {
+		theRobot.sleep(500);
+		frontActual = robotFunctions.Sonar(theRobot);
+		System.out.println(frontActual);
+		while (frontActual > 35) {
 			frontActual = robotFunctions.Sonar(theRobot);
+			System.out.println(frontActual);
 			main.theRobot.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,0);
 		}
+		main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
 		theRobot.sleep(1000);
 	}
 
 	public static void firstTurn() {
 		if (side == 0) {
-			position.reliableCWTurn(22);
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,150,123,RXTXRobot.MOTOR2,-150,123);
+			position.reliableCWTurn(19);
 		}
 		else if (side == 1) {
-			position.reliableCCTurn(22);
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,-150,140,RXTXRobot.MOTOR2,150,140);
+			position.reliableCCTurn(30);
 		}
 	}
 
@@ -331,9 +313,9 @@ public class main {
 		int initial = theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 		int pos = initial;
 		double dist = robotFunctions.Sonar(theRobot);
-		while (Math.pow(pos-initial,2) < Math.pow(500,2)) {
+		while (Math.pow(pos-initial,2) < Math.pow(600,2)) {
 			dist = robotFunctions.Sonar(theRobot);
-			if (dist > 30)
+			if (dist > 0)
 				theRobot.runMotor(RXTXRobot.MOTOR1,-400,RXTXRobot.MOTOR2,-400,0);
 			pos = theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 		}
@@ -343,9 +325,11 @@ public class main {
 
 	public static void turnOnPlatform() {
 		if (side == 0)
-			position.turn(-30,0,0,0,0);
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,-500,250,RXTXRobot.MOTOR2,500,250);
+			//position.turn(-110,0,0,-180,175);
 		else if (side == 1)
-			position.turn(30,0,0,0,0);
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,250,100,RXTXRobot.MOTOR2,-250,100);
+			//position.turn(600,180,-180,0,0);
 	}
 
 	public static void boomStuff() {
@@ -361,21 +345,42 @@ public class main {
 	}
 
 	public static void getOffThePlatform() {
-		double dist = robotFunctions.Sonar(theRobot);
-
-		while (dist > 40) {
-			dist = robotFunctions.Sonar(theRobot);
-			main.theRobot.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,0);
+		/*int initial = theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
+		int pos = initial;
+		while (Math.pow(pos-initial,2) < Math.pow(500,2)) {
+			theRobot.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,0);
+			pos = theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 		}
+		theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+		theRobot.sleep(2000);*/
+
+		double dist = robotFunctions.Sonar(theRobot);
+		dist = robotFunctions.Sonar(theRobot);
+
+		int sent = 0;
+		while (dist > 35) {
+			dist = robotFunctions.Sonar(theRobot);
+			position.go(3);
+			sent += 1;
+			//main.theRobot.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,0);
+		}
+		if (sent < 6) {
+			if (side == 1) {
+				position.turn(90);
+			}
+		}
+
 		main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
 	}
 
 	public static void secondTurn() {
 		if (side == 0) {
 			//position.turn(-90);
-			position.reliableCCTurn(20);
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,-150,150,RXTXRobot.MOTOR2,150,150);
+			position.reliableCCTurn(25);
 		}
 		else if (side == 1) {
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,150,150,RXTXRobot.MOTOR2,-150,150);
 			position.reliableCWTurn(20);
 		}
 	}
@@ -391,8 +396,10 @@ public class main {
 
 	public static void getTheBall() {
 		double dist = robotFunctions.Sonar(theRobot);
-		while (dist > 20) {
-			main.theRobot.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,0);
+		dist = robotFunctions.Sonar(theRobot);
+		System.out.println(dist);
+		while (dist > 10) {
+			main.theRobot.runMotor(RXTXRobot.MOTOR1,-300,RXTXRobot.MOTOR2,-300,0);
 			dist = robotFunctions.Sonar(theRobot);
 		}
 		main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
