@@ -72,24 +72,24 @@ class Navigation implements Runnable {
 				Y_PREV = Y_NOW;
 				Y_NOW = Y.tick(Y_SENT-Y_PREV,Q,R);
 				//Y_NOW += Y_SENT-Y_PREV;
-				System.out.println(Y_SENT);
-				System.out.println(Y_NOW);
+				//System.out.println(Y_SENT);
+				//System.out.println(Y_NOW);
 				main.theRobot.runMotor(RXTXRobot.MOTOR1,power,RXTXRobot.MOTOR2,power,0);
 			}
-			System.out.println(Y_SENT);
-			System.out.println(Y_NOW);
+			//System.out.println(Y_SENT);
+			//System.out.println(Y_NOW);
 		}
 		else if (y > Y_NOW) {
 			while (Y_NOW < y) {
 				Y_PREV = Y_NOW;
 				Y_NOW = Y.tick(Y_SENT-Y_PREV,Q,R);
 				//Y_NOW += Y_SENT-Y_PREV;
-				System.out.println(Y_SENT);
-				System.out.println(Y_NOW);
+				//System.out.println(Y_SENT);
+				//System.out.println(Y_NOW);
 				main.theRobot.runMotor(RXTXRobot.MOTOR1,-power,RXTXRobot.MOTOR2,-power,0);
 			}
-			System.out.println(Y_SENT);
-			System.out.println(Y_NOW);
+			//System.out.println(Y_SENT);
+			//System.out.println(Y_NOW);
 		}
 
 		main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
@@ -151,6 +151,7 @@ class Navigation implements Runnable {
 		while (Y_NOW < y) {
 			Y_PREV = Y_NOW;
 			Y_NOW = Y.tick(Y_SENT-Y_PREV,Q,R);
+			System.out.println(Y_NOW);
 			main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -100, 0);
 			newBaseline = robotFunctions.Sonar2(main.theRobot);
 			if (newBaseline < baseline-1) {
@@ -185,14 +186,14 @@ class Navigation implements Runnable {
 			main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -100, 0);
 			newBaseline = robotFunctions.Sonar3(main.theRobot);
 			if (newBaseline < baseline-1) {
-				main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -250, 0);
+				main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -400, 0);
 				if (Y_NOW > y)
 					break;
 			}
 			main.theRobot.runMotor(RXTXRobot.MOTOR1, -100, RXTXRobot.MOTOR2, -100, 0);
 			newBaseline = robotFunctions.Sonar3(main.theRobot);
 			if (newBaseline > baseline+1) {
-				main.theRobot.runMotor(RXTXRobot.MOTOR1, -250, RXTXRobot.MOTOR2, -100, 0);
+				main.theRobot.runMotor(RXTXRobot.MOTOR1, -400, RXTXRobot.MOTOR2, -100, 0);
 				if (Y_NOW > y)
 					break;
 			}
@@ -205,7 +206,7 @@ class Navigation implements Runnable {
 public class main {
 	public static RXTXRobot theRobot;
 
-	private static int side = 0;
+	private static int side = 1;
 
 	private static double X_NOW,Y_NOW,THETA_NOW;
 
@@ -220,12 +221,6 @@ public class main {
 		position.start();
 
 		//Actually do stuff
-		//position.turn(-90);
-		//position.go(36);
-		//System.out.println(robotFunctions.Sonar(theRobot));
-		//System.out.println(robotFunctions.Sonar2(theRobot));
-		//System.out.println(robotFunctions.Sonar3(theRobot));
-		//theRobot.runMotor(RXTXRobot.MOTOR1,100,0);
 
 		//Move out of the box
 		theRobot.runMotor(RXTXRobot.MOTOR1,-180,RXTXRobot.MOTOR2,-180,500);
@@ -241,6 +236,7 @@ public class main {
 		rampStuff();
 		//Do boom stuff
 		boomStuff();
+		theRobot.sleep(5000);
 
 		//Turn
 		turnOnPlatform();
@@ -248,36 +244,33 @@ public class main {
 
 		//Move off of the platform
 		getOffThePlatform();
-		//theRobot.sleep(1000);
+		theRobot.sleep(1000);
 
 		//Get the ball
 		secondTurn();
 		getTheBall();
 
 		//Back up
-		position.go(-20);
-		//Turn
-		/*secondTurnAlt();
-		position.go(60);
+		position.go(-10);
+		twoPointFifthTurn();
 
 		//Approach the wall
-		getOffThePlatform();
+		toWall();
 
 		//Turn
 		thirdTurn();
-		getOffThePlatform();
+		toWall();
 		thirdTurn();
 		//Move over the bridge
 		goOverTheBridge();
 		//Turn
 		thirdTurn();
 		//Go to the sandbox
-		getOffThePlatform();
+		toWall();
 
 		robotFunctions.moveArm(theRobot);
-		double perc = robotFunctions.Conduct(theRobot);
-		if (perc > 80)
-		robotFunctions.dropBall(theRobot);*/
+		robotFunctions.Conduct(theRobot);
+		robotFunctions.dropBall(theRobot);
 
 		//Close connection
 		theRobot.close();
@@ -300,23 +293,36 @@ public class main {
 
 	public static void firstTurn() {
 		if (side == 0) {
-			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,150,123,RXTXRobot.MOTOR2,-150,123);
-			position.reliableCWTurn(19);
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,150,150,RXTXRobot.MOTOR2,-150,150);
+			position.reliableCWTurn(34);
 		}
 		else if (side == 1) {
-			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,-150,140,RXTXRobot.MOTOR2,150,140);
-			position.reliableCCTurn(30);
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,-500,350,RXTXRobot.MOTOR2,500,200);
+			position.reliableCCTurn(32);
 		}
 	}
 
 	public static void rampStuff() {
+		double dist = robotFunctions.Sonar(theRobot);
+		theRobot.runMotor(RXTXRobot.MOTOR1,-500,RXTXRobot.MOTOR2,-500,450);
 		int initial = theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 		int pos = initial;
-		double dist = robotFunctions.Sonar(theRobot);
-		while (Math.pow(pos-initial,2) < Math.pow(600,2)) {
+		int threshold = 0;
+		if (side == 0)
+			threshold = 400;
+		else if (side == 1)
+			threshold = 400;
+		while (Math.pow(pos-initial,2) < Math.pow(threshold,2)) {
 			dist = robotFunctions.Sonar(theRobot);
-			if (dist > 0)
-				theRobot.runMotor(RXTXRobot.MOTOR1,-400,RXTXRobot.MOTOR2,-400,0);
+			System.out.println(dist);
+			if (dist > 30) {
+				theRobot.runMotor(RXTXRobot.MOTOR1,-500,RXTXRobot.MOTOR2,-500,0);
+			}
+			else {
+				theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+				theRobot.sleep(3000);
+				dist -= 300;
+			}
 			pos = theRobot.getEncodedMotorPosition(RXTXRobot.MOTOR1);
 		}
 		theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
@@ -325,10 +331,10 @@ public class main {
 
 	public static void turnOnPlatform() {
 		if (side == 0)
-			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,-500,250,RXTXRobot.MOTOR2,500,250);
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,-500,300,RXTXRobot.MOTOR2,500,300);
 			//position.turn(-110,0,0,-180,175);
 		else if (side == 1)
-			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,250,100,RXTXRobot.MOTOR2,-250,100);
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,250,250,RXTXRobot.MOTOR2,-250,250);
 			//position.turn(600,180,-180,0,0);
 	}
 
@@ -354,19 +360,34 @@ public class main {
 		theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
 		theRobot.sleep(2000);*/
 
+		theRobot.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,2500);
+
 		double dist = robotFunctions.Sonar(theRobot);
 		dist = robotFunctions.Sonar(theRobot);
 
 		int sent = 0;
 		while (dist > 35) {
 			dist = robotFunctions.Sonar(theRobot);
+			System.out.println(dist);
 			position.go(3);
 			sent += 1;
 			//main.theRobot.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,0);
 		}
 		if (sent < 6) {
-			if (side == 1) {
-				position.turn(90);
+			if (side == 0) {
+				main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,150,170,RXTXRobot.MOTOR2,-150,170);
+				position.go(18);
+				main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,-150,123,RXTXRobot.MOTOR2,150,123);
+			}
+			else if (side == 1) {
+				main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,-150,200,RXTXRobot.MOTOR2,150,200);
+				position.go(24);
+				main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,150,140,RXTXRobot.MOTOR2,-150,140);
+			}
+			dist = robotFunctions.Sonar(theRobot);
+			while (dist > 35) {
+				theRobot.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,0);
+				dist = robotFunctions.Sonar(theRobot);
 			}
 		}
 
@@ -381,16 +402,7 @@ public class main {
 		}
 		else if (side == 1) {
 			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,150,150,RXTXRobot.MOTOR2,-150,150);
-			position.reliableCWTurn(20);
-		}
-	}
-
-	public static void secondTurnAlt() {
-		if (side == 0) {
-			position.turn(-90);
-		}
-		else if (side == 1) {
-			position.turn(90);
+			position.reliableCWTurn(25);
 		}
 	}
 
@@ -403,6 +415,26 @@ public class main {
 			dist = robotFunctions.Sonar(theRobot);
 		}
 		main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
+	}
+
+	public static void toWall() {
+		double dist = robotFunctions.Sonar(theRobot);
+		while (dist > 50) {
+			System.out.println(dist);
+			theRobot.runMotor(RXTXRobot.MOTOR1,-100,RXTXRobot.MOTOR2,-100,0);
+			dist = robotFunctions.Sonar(theRobot);
+		}
+	}
+
+	public static void twoPointFifthTurn() {
+		if (side == 0) {
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,-150,150,RXTXRobot.MOTOR2,150,150);
+			position.reliableCCTurn(20);
+		}
+		else if (side == 1) {
+			main.theRobot.runEncodedMotor(RXTXRobot.MOTOR1,150,150,RXTXRobot.MOTOR2,-150,150);
+			position.reliableCWTurn(20);
+		}
 	}
 
 	public static void thirdTurn() {
@@ -419,7 +451,7 @@ public class main {
 
 		while (dist > 40) {
 			dist = robotFunctions.Sonar(theRobot);
-			main.theRobot.runMotor(RXTXRobot.MOTOR1,-300,RXTXRobot.MOTOR2,-300,0);
+			main.theRobot.runMotor(RXTXRobot.MOTOR1,-500,RXTXRobot.MOTOR2,-500,0);
 		}
 		main.theRobot.runMotor(RXTXRobot.MOTOR1,0,RXTXRobot.MOTOR2,0,0);
 	}

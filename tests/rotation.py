@@ -58,15 +58,15 @@ import regression
 
 def kalman():
         plt.ion()
-        measurement = 0
+        measurement = 3
         data = []
         total = [0.0]
         X = [0.0,0.0,0.0,0.0]
         P = [0.0]
         java = []
 
-        Q = 0.001#process variance
-        R = 0.001#measurement variance
+        Q = 1000000#0.001#process variance
+        R = 1000000#0.001#measurement variance
 
         P_ = 0.0
         K = 0.0
@@ -90,8 +90,8 @@ def kalman():
                 '''if len(line) < 3:
                         #target = [float(line[0])]
                         print line[0]'''
-                if len(line) == 1:
-                        data.append(float(line[measurement])-total[-1])
+                if len(line) == 4:
+                        data.append(float(line[measurement]))
                         total.append(sum(data))
 
                         #variance = sum([(i - sum(data)/len(data))**2 for i in data])/len(data)
@@ -106,21 +106,22 @@ def kalman():
                         X.append(X_ + K*(data[-1] - (X[-1]-X[-2])))
                         P.append((1-K)*P_)
 
-                        j = raw_input()
-                        print j
-                        java.append(float(j))
+                        #j = raw_input()
+                        #print j
+                        #java.append(float(j))
 
                         #print data
                         #print total
                         #print X
                         #print target
-                        plt.plot(range(len(data)),data,'b-')
-                        plt.plot(range(len(data)),total[1:],'g-')
-                        plt.plot(range(len(data)),X[4:],'r-')
+        plt.plot(range(len(data)),data,'b-')
+        plt.plot(range(len(data)),total[1:],'g-')
+        plt.plot(range(len(data)),X[4:],'r-')
                         #plt.plot(range(len(data)-1),target,'k-')
-                        plt.plot(range(len(data)),java,'m-')
+                        #plt.plot(range(len(data)),java,'m-')
 
-                        plt.pause(0.00001)
+                        #plt.pause(0.00001)
+        #print "BROKEN"
         while True:
                 plt.pause(0.05)
 

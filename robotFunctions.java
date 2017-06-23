@@ -20,7 +20,7 @@ public class robotFunctions {
 	}
 
 	public static void raiseBoom(RXTXRobot r) {
-		r.runMotor(RXTXRobot.MOTOR3,100,8000);
+		r.runMotor(RXTXRobot.MOTOR3,100,9000);
 	}
 	public static void lowerBoom(RXTXRobot r) {
 		r.runMotor(RXTXRobot.MOTOR3,-100,2500);
@@ -74,6 +74,8 @@ public class robotFunctions {
 
 		//actual values
 		double roomTemp = (temp.getValue()*-.15)+106.734;
+		if (roomTemp < 20)
+			roomTemp += 4;
 		double windSpeed = (1.349 * Math.exp(-.027 * difference)) - 1;
 		if(windSpeed < 0) windSpeed = 0;
 		//Print out the actual values
@@ -81,17 +83,14 @@ public class robotFunctions {
 		System.out.println("The wind speed is " + windSpeed + " meters per second.");
 	}
 
-	public static double Conduct(RXTXRobot r) {
-        /*r.getConductivity();
-        AnalogPin conduct = r.getAnalogPin(5);
-        double waterPercent = (conduct.getValue()*-.022)+23.335;    //This is the equation from the trend line
-        System.out.println("The water percentage is " + waterPercent + "%");*/
-        //THIS CODE NEEDS TO BE ADJUSTED TO NOT DROP THE PING PONG BALL IF THE THRESHOLD IS NOT REACHED
+	public static double Conduct(RXTXRobot r)
+	{
 		//moveServoTime(r,7,1.0); //this still doesn't work
 		double conduct = r.getConductivity();
-		double waterPercent = (-1.79e-5 * Math.pow(conduct, 2)) - (1.387e-4 *conduct) +18.19;
+		double waterPercent = (-1.79e-5 * Math.pow(conduct, 2)) - (1.387e-4 *conduct) +14.532;
 		if(waterPercent < 0) waterPercent = 0;
 		System.out.println("The water percentage is " + waterPercent + "%");
+		//THIS CODE NEEDS TO BE ADJUSTED TO NOT DROP THE PING PONG BALL IF THE THRESHOLD IS NOT REACHED
 		return waterPercent;
 	}
 }
